@@ -50,6 +50,8 @@ for x in range(15):
             tile_rect = canvas.create_rectangle(x1, y1, height, width, fil="green")
             tile_txt = canvas.create_text((x1 + height)/ 2, (y1 + width)/2, anchor='center', text="")
         rects[(x,y)] = [tile_rect, tile_txt]
+        print(x1, y1, height, width)
+
     x1= 0
     height= 50
 
@@ -57,5 +59,19 @@ for x in range(15):
 #canvas.itemconfigure(rects[(1,1)][1],font=("Arial", 35), anchor='center', text=S)
 #canvas.itemconfigure(rects[(1,1)][0], fill="white")
 
+player_letters = {}
+p_x1 = 250
+p_y1 = 850
+p_height = 300
+p_width = 900
+
+test_let = ["Α", "Β", "Γ", "Δ", "Ε", "Ζ", "Η"]
+
+for i in range(7):
+    player_tile_rect = canvas.create_rectangle(p_x1, p_y1, p_height, p_width, fill="white")
+    player_tile_txt = canvas.create_text((p_x1 + p_height)/ 2, (p_y1 + p_width)/2, anchor='center', text=f"{test_let[i]}")
+    player_letters[i] = [player_tile_rect, player_tile_txt]
+    p_x1 += 50
+    p_height += 50
 
 board.mainloop()
