@@ -57,7 +57,7 @@ class Board(Tk):
             self.x1= 0
             self.height= 50
 
-        #dokimi gia pithani proseggisi tropopoiisis xromatos kai keimenou sto canvas/keli
+        #dokimi gia tropopoiisi xromatos kai keimenou sto canvas/keli
         #canvas.itemconfigure(rects[(1,1)][1],font=("Arial", 35), anchor='center', text=S)
         #canvas.itemconfigure(rects[(1,1)][0], fill="white")
 
@@ -77,38 +77,40 @@ class Board(Tk):
             self.p_height += 50
 
 
-        def on_click(self, event, transfer = False):
-            data = []
-            if transfer == False:
-                new_data = self.proto_keli(event, data)
-                transfer = True
+        self.canvas.bind('<Button-1>', self.on_click)
+        self.canvas.bind('<Button-1>', self.proto_keli)
+        self.canvas.bind('<Button-1>', self.deutero_keli)
+
+    def on_click(self, event, transfer = False):
+        data = []
+        if transfer == False:
+            new_data = self.proto_keli(event, data)
+            transfer = True
             
-            if transfer == True:
-                self.deutero_keli(event, new_data)
-                transfer = False
+        if transfer == True:
+            self.deutero_keli(event, new_data)
+            transfer = False
 
-        def proto_keli(self, event, data):
-            item1 = self.canvas.find_closest(event.x, event.y)
-            tags1 = self.canvas.itemcget(item1, "tags")
-            if tags1 in self.player_letters:
-                color = self.canvas.itemcget(tags1[0], "fill")
-                text = self.canvas.itemcget(tags1[1], "text")
-                data = [color, text]
-            return data
+    def proto_keli(self, event, data):
+        item1 = self.canvas.find_closest(event.x, event.y)
+        tags1 = self.canvas.itemcget(item1, "tags")
+        if tags1 in self.player_letters:
+            color = self.canvas.itemcget(tags1[0], "fill")
+            text = self.canvas.itemcget(tags1[1], "text")
+            data = [color, text]
+        return data
 
 
-        def deutero_keli(self, event, new_data):
-            item2 = self.canvas.find_closest(event.x, event.y)
-            tags2 = self.canvas.itemcget(item2, "tags")
-            if tags2 in self.rects:
-                tags2.itemconfigure(font=("Arial", 35), anchor='center', text= f"{new_data[1]}")
-                tags2.itemconfigure(fill=f"{new_data[0]}")
+    def deutero_keli(self, event, new_data):
+        item2 = self.canvas.find_closest(event.x, event.y)
+        tags2 = self.canvas.itemcget(item2, "tags")
+        if tags2 in self.rects:
+            tags2.itemconfigure(font=("Arial", 35), anchor='center', text= f"{new_data[1]}")
+            tags2.itemconfigure(fill=f"{new_data[0]}")
         
 
 
-        self.canvas.bind('<Button-1>', on_click)
-        self.canvas.bind('<Button-1>', proto_keli)
-        self.canvas.bind('<Button-1>', deutero_keli)
+
 
 if __name__ == "__main__":
     board = Board()
