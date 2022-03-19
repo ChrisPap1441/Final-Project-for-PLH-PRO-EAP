@@ -18,6 +18,7 @@ class Board(Tk):
         self.transfer_letter = ""
         self.transfer_letter_temp = ""
         self.transfer_color = "white"
+        
 
         #leksiko gia ta kelia tou board
         self.rects = {}
@@ -63,7 +64,8 @@ class Board(Tk):
                     #ta upoloipa klasika kelia
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fil="green", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="", tags= f"{x},{y}")
-                self.rects[(f"{x},{y}")] = [tile_rect, tile_txt]
+                board_tile_empty = True
+                self.rects[(f"{x},{y}")] = [tile_rect, tile_txt, board_tile_empty]
                 
 
             self.x1= 0
@@ -85,7 +87,8 @@ class Board(Tk):
         for i in range(7):
             player_tile_rect = self.canvas.create_rectangle(self.p_x1, self.p_y1, self.p_height, self.p_width, outline = "black", fill="white", tags= f"{i}")
             player_tile_txt = self.canvas.create_text((self.p_x1 + self.p_height)/ 2, (self.p_y1 + self.p_width)/2, anchor='center', text=f"{test_let[i]}", tags= f"{i}")
-            self.player_letters[f"{i}"] = [player_tile_rect, player_tile_txt]
+            player_tile_empty = False
+            self.player_letters[f"{i}"] = [player_tile_rect, player_tile_txt, player_tile_empty]
             self.p_x1 += 50
             self.p_height += 50
 
@@ -98,7 +101,7 @@ class Board(Tk):
         if self.transfer == False:
             item1 = self.canvas.find_closest(event.x, event.y)
             self.tags1 = self.canvas.itemcget(item1, "tags").replace(" current", "")
-            if self.tags1 in self.player_letters:
+            if self.tags1 in self.player_letters and self.player_letters[self.tags1][2] == False:
                 self.transfer_letter = self.canvas.itemcget(self.player_letters[self.tags1][1], "text")
                 self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = "yellow")
                 self.transfer = True
@@ -106,18 +109,30 @@ class Board(Tk):
             item2 = self.canvas.find_closest(event.x, event.y)
             self.tags2 = self.canvas.itemcget(item2, "tags").replace(" current", "")
             #se periptosi pou o xristis thelei na allaksei seira sta grammata tou
-            if self.tags2 in self.player_letters:
+            if self.tags2 in self.player_letters and self.player_letters[self.tags2][2] == False:
                 self.transfer_letter_temp = self.canvas.itemcget(self.player_letters[self.tags2][1], "text")
                 self.canvas.itemconfigure(self.player_letters[self.tags2][1], text= self.transfer_letter)
                 self.canvas.itemconfigure(self.player_letters[self.tags1][1], text= self.transfer_letter_temp)
                 self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = self.transfer_color)
                 self.transfer = False
+            #se periptosi pou o xristis thelei na topothetisi gramma se keno keli sta grammata tou
+            elif self.tags2 in self.player_letters and self.player_letters[self.tags2][2] == True:
+                self.transfer_letter_temp = self.canvas.itemcget(self.player_letters[self.tags2][1], "text")
+                self.canvas.itemconfigure(self.player_letters[self.tags2][1], text= self.transfer_letter)
+                self.canvas.itemconfigure(self.player_letters[self.tags2][0], outline = "black", fill = self.transfer_color)
+                self.canvas.itemconfigure(self.player_letters[self.tags1][1], text= self.transfer_letter_temp)
+                self.canvas.itemconfigure(self.player_letters[self.tags1][0], outline = "white", fill = "black")
+                self.player_letters[self.tags2][2] = False
+                self.player_letters[self.tags1][2] = True
+                self.transfer = False
             #se periptosi pou o xristis thelei na eisagei gramma sto board
-            elif self.tags2 in self.rects:
+            elif self.tags2 in self.rects and self.rects[self.tags2][2] == True:
                 self.canvas.itemconfigure(self.rects[self.tags2][1], font=("Arial", 35), anchor='center', text= self.transfer_letter)
                 self.canvas.itemconfigure(self.rects[self.tags2][0], fill= self.transfer_color )
                 self.canvas.itemconfigure(self.player_letters[self.tags1][0], outline = "white", fill = "black")
                 self.canvas.itemconfigure(self.player_letters[self.tags1][1], text= "")
+                self.player_letters[self.tags1][2] = True
+                self.rects[self.tags2][2] = False
                 self.transfer = False
             #se periptosi pou xristis patisei allou(work in progress)
             else:
