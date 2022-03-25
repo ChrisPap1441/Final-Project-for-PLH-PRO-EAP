@@ -1,5 +1,6 @@
 from textwrap import fill
 from tkinter import *
+from turtle import left
 
 class Board(Tk):
     def __init__(self):
@@ -8,8 +9,8 @@ class Board(Tk):
         self.title("Scrabble")
         self.geometry("1520x980")
         self.configure(background="lightgrey")
-        self.canvas = Canvas(self, width=1920, height=1080)
-        self.canvas.pack()
+        self.canvas = Canvas(self, width=800, height=910, highlightthickness = 0, background= "lightgrey")
+        self.canvas.pack(side = "left", fill= BOTH)
 
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
         self.tags1 = ""
@@ -19,7 +20,7 @@ class Board(Tk):
         self.transfer_letter_temp = ""
         self.transfer_color = "white"
         
-
+        self.rects_list = []
         #leksiko gia ta kelia tou board
         self.rects = {}
 
@@ -33,6 +34,7 @@ class Board(Tk):
         for x in range(15):
             self.y1+=50
             self.width += 50
+            self.rects_list.append([])
             for y in range(15):
                 self.x1+=50
                 self.height += 50
@@ -66,6 +68,7 @@ class Board(Tk):
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="", tags= f"{x},{y}")
                 board_tile_empty = True
                 self.rects[(f"{x},{y}")] = [tile_rect, tile_txt, board_tile_empty]
+                self.rects_list[x].append("")
                 
 
             self.x1= 0
@@ -73,7 +76,7 @@ class Board(Tk):
 
         #leksiko gia ta kelia tou paikti
         self.player_letters = {}
-
+        
         #metavlites gia tis suntetagmenes dimiourgias ton kelion tou paikti
         self.p_x1 = 250
         self.p_y1 = 850
@@ -94,7 +97,7 @@ class Board(Tk):
 
 
         self.canvas.bind('<Button-1>', self.on_click)
-
+        
     #methodos gia tin metafora tou grammatos meso tou pontikiou tou xristi
     def on_click(self, event):
         
@@ -139,6 +142,7 @@ class Board(Tk):
                 self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = self.transfer_color)
                 self.transfer = False
 
+        
 if __name__ == "__main__":
     board = Board()
     board.mainloop()
