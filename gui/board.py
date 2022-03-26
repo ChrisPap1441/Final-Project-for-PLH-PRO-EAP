@@ -1,6 +1,6 @@
 from textwrap import fill
 from tkinter import *
-from turtle import left
+from letters_bag import Letters_bag
 
 class Board(Tk):
     def __init__(self):
@@ -11,6 +11,8 @@ class Board(Tk):
         self.configure(background="lightgrey")
         self.canvas = Canvas(self, width=800, height=910, highlightthickness = 0, background= "lightgrey")
         self.canvas.pack(side = "left", fill= BOTH)
+
+        self.bag = Letters_bag()
 
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
         self.tags1 = ""
@@ -89,7 +91,7 @@ class Board(Tk):
         #dimiourgia kelion gia ta grammata tou xristi
         for i in range(7):
             player_tile_rect = self.canvas.create_rectangle(self.p_x1, self.p_y1, self.p_height, self.p_width, outline = "black", fill="white", tags= f"{i}")
-            player_tile_txt = self.canvas.create_text((self.p_x1 + self.p_height)/ 2, (self.p_y1 + self.p_width)/2, anchor='center', text=f"{test_let[i]}", tags= f"{i}")
+            player_tile_txt = self.canvas.create_text((self.p_x1 + self.p_height)/ 2, (self.p_y1 + self.p_width)/2, anchor='center', text= self.bag.pick_letter(), tags= f"{i}")
             player_tile_empty = False
             self.player_letters[f"{i}"] = [player_tile_rect, player_tile_txt, player_tile_empty]
             self.p_x1 += 50
@@ -111,7 +113,7 @@ class Board(Tk):
         else:
             item2 = self.canvas.find_closest(event.x, event.y)
             self.tags2 = self.canvas.itemcget(item2, "tags").replace(" current", "")
-            #se periptosi pou o xristis thelei na allaksei seira sta grammata tou
+            #se periptosi pou o xristis thelei na allaksei tin seira ton grammaton tou
             if self.tags2 in self.player_letters and self.player_letters[self.tags2][2] == False:
                 self.transfer_letter_temp = self.canvas.itemcget(self.player_letters[self.tags2][1], "text")
                 self.canvas.itemconfigure(self.player_letters[self.tags2][1], text= self.transfer_letter)
@@ -119,7 +121,7 @@ class Board(Tk):
                 self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = self.transfer_color)
                 self.transfer = False
             #se periptosi pou o xristis thelei na topothetisi gramma se keno keli sta grammata tou
-            elif self.tags2 in self.player_letters and self.player_letters[self.tags2][2] == True:
+            elif self.tags2 in self.player_letters and self.player_letters[self.tags2][2]:
                 self.transfer_letter_temp = self.canvas.itemcget(self.player_letters[self.tags2][1], "text")
                 self.canvas.itemconfigure(self.player_letters[self.tags2][1], text= self.transfer_letter)
                 self.canvas.itemconfigure(self.player_letters[self.tags2][0], outline = "black", fill = self.transfer_color)
@@ -129,7 +131,7 @@ class Board(Tk):
                 self.player_letters[self.tags1][2] = True
                 self.transfer = False
             #se periptosi pou o xristis thelei na eisagei gramma sto board
-            elif self.tags2 in self.rects and self.rects[self.tags2][2] == True:
+            elif self.tags2 in self.rects and self.rects[self.tags2][2]:
                 self.canvas.itemconfigure(self.rects[self.tags2][1], font=("Arial", 35), anchor='center', text= self.transfer_letter)
                 self.canvas.itemconfigure(self.rects[self.tags2][0], fill= self.transfer_color )
                 self.canvas.itemconfigure(self.player_letters[self.tags1][0], outline = "white", fill = "black")
