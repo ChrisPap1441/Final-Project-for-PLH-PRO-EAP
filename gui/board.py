@@ -1,6 +1,10 @@
+#gia na min dimiourgite kathe fora to pycache
+import sys
+sys.dont_write_bytecode = True
 from textwrap import fill
 from tkinter import *
 from letters_bag import Letters_bag
+
 
 class Board(Tk):
     def __init__(self):
