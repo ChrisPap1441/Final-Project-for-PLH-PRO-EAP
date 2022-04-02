@@ -18,7 +18,7 @@ class Board(Tk):
 
         self.bag = Letters_bag()
         self.check = Word_check()
-        self.check.check_for_valid_word("ΚΑΣΣΙΤΕΡΟ")
+        
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
         self.tags1 = ""
         self.tags2 = ""
