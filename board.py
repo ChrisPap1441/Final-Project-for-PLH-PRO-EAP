@@ -3,6 +3,7 @@ sys.dont_write_bytecode = True #gia na min dimiourgite se kathe ektelesi o fakel
 from textwrap import fill
 from tkinter import *
 from letters_bag import Letters_bag
+from word_check import Word_check
 
 
 class Board(Tk):
@@ -16,7 +17,8 @@ class Board(Tk):
         self.canvas.pack(side = "left", fill= BOTH)
 
         self.bag = Letters_bag()
-
+        self.check = Word_check()
+        self.check.check_for_valid_word("ΚΑΣΣΙΤΕΡΟ")
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
         self.tags1 = ""
         self.tags2 = ""
