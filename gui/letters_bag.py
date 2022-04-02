@@ -32,5 +32,5 @@ class Letters_bag:
         if len(self.letters_bag) > 0:
             return self.letters_bag.pop()
         else:
-            return "game over"
+            return "!"
         

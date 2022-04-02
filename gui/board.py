@@ -1,6 +1,5 @@
-#gia na min dimiourgite kathe fora to pycache
 import sys
-sys.dont_write_bytecode = True
+sys.dont_write_bytecode = True #gia na min dimiourgite se kathe ektelesi o fakelos pycache
 from textwrap import fill
 from tkinter import *
 from letters_bag import Letters_bag
@@ -74,7 +73,7 @@ class Board(Tk):
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="", tags= f"{x},{y}")
                 board_tile_empty = True
                 self.rects[(f"{x},{y}")] = [tile_rect, tile_txt, board_tile_empty]
-                self.rects_list[x].append("")
+                self.rects_list[x].append(" ")
                 
 
             self.x1= 0
@@ -89,8 +88,6 @@ class Board(Tk):
         self.p_height = 300
         self.p_width = 900
 
-        #prosorinos pinakas me grammata tou paikti gia dokimes 
-        test_let = ["Ε", "Χ", "Τ", "Π", "Ε", "Ο", "Υ"]
 
         #dimiourgia kelion gia ta grammata tou xristi
         for i in range(7):
