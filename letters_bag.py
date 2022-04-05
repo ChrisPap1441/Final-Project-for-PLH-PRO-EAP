@@ -27,10 +27,10 @@ class Letters_bag:
             self.letters_bag.extend(["Α"])
     
     def pick_letter(self):
-        random.shuffle(self.letters_bag)
+        random.shuffle(self.letters_bag) #anakateuoume ta grammata
 
         if len(self.letters_bag) > 0:
             return self.letters_bag.pop()
         else:
-            return "!"
+            return "!" #exoun teleiosei ta grammata ara teleionei kai to paixnidi
         

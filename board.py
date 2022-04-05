@@ -1,9 +1,10 @@
 import sys
 sys.dont_write_bytecode = True #gia na min dimiourgite se kathe ektelesi o fakelos pycache
-from textwrap import fill
+import random
 from tkinter import *
 from letters_bag import Letters_bag
 from word_check import Word_check
+from player import Player
 
 
 class Board(Tk):
@@ -18,6 +19,10 @@ class Board(Tk):
 
         self.bag = Letters_bag()
         self.check = Word_check()
+        self.computer = Player()
+        self.player = Player()
+        self.turn = None
+        self.first_round = True
         
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
         self.tags1 = ""
@@ -82,7 +87,7 @@ class Board(Tk):
             self.height= 50
 
         #leksiko gia ta kelia tou paikti
-        self.player_letters = {}
+        self.player_tiles = {}
         
         #metavlites gia tis suntetagmenes dimiourgias ton kelion tou paikti
         self.p_x1 = 250
@@ -90,62 +95,80 @@ class Board(Tk):
         self.p_height = 300
         self.p_width = 900
 
-
         #dimiourgia kelion gia ta grammata tou xristi
         for i in range(7):
-            player_tile_rect = self.canvas.create_rectangle(self.p_x1, self.p_y1, self.p_height, self.p_width, outline = "black", fill="white", tags= f"{i}")
-            player_tile_txt = self.canvas.create_text((self.p_x1 + self.p_height)/ 2, (self.p_y1 + self.p_width)/2, anchor='center', text= self.bag.pick_letter(), tags= f"{i}")
-            player_tile_empty = False
-            self.player_letters[f"{i}"] = [player_tile_rect, player_tile_txt, player_tile_empty]
+            player_tile_rect = self.canvas.create_rectangle(self.p_x1, self.p_y1, self.p_height, self.p_width, outline = "white", fill="black", tags= f"{i}")
+            player_tile_txt = self.canvas.create_text((self.p_x1 + self.p_height)/ 2, (self.p_y1 + self.p_width)/2, anchor='center', text= "", tags= f"{i}")
+            player_tile_empty = True
+            self.player_tiles[f"{i}"] = [player_tile_rect, player_tile_txt, player_tile_empty]
             self.p_x1 += 50
             self.p_height += 50
 
 
         self.canvas.bind('<Button-1>', self.on_click)
         
+        #main
+        self.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
+        while True:
+            if self.first_round == True:
+                for i in range(7):
+                    self.computer.hands_letters.append(self.bag.pick_letter())
+                    self.player.hands_letters.append(self.bag.pick_letter())
+                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][1], anchor='center', text= self.player.hands_letters[i])
+                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][0], outline = "black", fill= self.transfer_color)
+                    self.player_tiles[f"{i}"][2] = False
+            self.first_round == False
+            break
+            
+            # if self.turn == 0:
+            #     #paizei o upologistis
+            #     self.turn = 1
+            # else:
+            #     #paizei o xristis
+            #     self.turn = 0
+
     #methodos gia tin metafora tou grammatos meso tou pontikiou tou xristi
     def on_click(self, event):
         
         if self.transfer == False:
             item1 = self.canvas.find_closest(event.x, event.y)
             self.tags1 = self.canvas.itemcget(item1, "tags").replace(" current", "")
-            if self.tags1 in self.player_letters and self.player_letters[self.tags1][2] == False:
-                self.transfer_letter = self.canvas.itemcget(self.player_letters[self.tags1][1], "text")
-                self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = "yellow")
+            if self.tags1 in self.player_tiles and self.player_tiles[self.tags1][2] == False:
+                self.transfer_letter = self.canvas.itemcget(self.player_tiles[self.tags1][1], "text")
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][0], fill = "yellow")
                 self.transfer = True
         else:
             item2 = self.canvas.find_closest(event.x, event.y)
             self.tags2 = self.canvas.itemcget(item2, "tags").replace(" current", "")
             #se periptosi pou o xristis thelei na allaksei tin seira ton grammaton tou
-            if self.tags2 in self.player_letters and self.player_letters[self.tags2][2] == False:
-                self.transfer_letter_temp = self.canvas.itemcget(self.player_letters[self.tags2][1], "text")
-                self.canvas.itemconfigure(self.player_letters[self.tags2][1], text= self.transfer_letter)
-                self.canvas.itemconfigure(self.player_letters[self.tags1][1], text= self.transfer_letter_temp)
-                self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = self.transfer_color)
+            if self.tags2 in self.player_tiles and self.player_tiles[self.tags2][2] == False:
+                self.transfer_letter_temp = self.canvas.itemcget(self.player_tiles[self.tags2][1], "text")
+                self.canvas.itemconfigure(self.player_tiles[self.tags2][1], text= self.transfer_letter)
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= self.transfer_letter_temp)
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][0], fill = self.transfer_color)
                 self.transfer = False
             #se periptosi pou o xristis thelei na topothetisi gramma se keno keli sta grammata tou
-            elif self.tags2 in self.player_letters and self.player_letters[self.tags2][2]:
-                self.transfer_letter_temp = self.canvas.itemcget(self.player_letters[self.tags2][1], "text")
-                self.canvas.itemconfigure(self.player_letters[self.tags2][1], text= self.transfer_letter)
-                self.canvas.itemconfigure(self.player_letters[self.tags2][0], outline = "black", fill = self.transfer_color)
-                self.canvas.itemconfigure(self.player_letters[self.tags1][1], text= self.transfer_letter_temp)
-                self.canvas.itemconfigure(self.player_letters[self.tags1][0], outline = "white", fill = "black")
-                self.player_letters[self.tags2][2] = False
-                self.player_letters[self.tags1][2] = True
+            elif self.tags2 in self.player_tiles and self.player_tiles[self.tags2][2] :
+                self.transfer_letter_temp = self.canvas.itemcget(self.player_tiles[self.tags2][1], "text")
+                self.canvas.itemconfigure(self.player_tiles[self.tags2][1], text= self.transfer_letter)
+                self.canvas.itemconfigure(self.player_tiles[self.tags2][0], outline = "black", fill = self.transfer_color)
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= self.transfer_letter_temp)
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][0], outline = "white", fill = "black")
+                self.player_tiles[self.tags2][2] = False
+                self.player_tiles[self.tags1][2] = True
                 self.transfer = False
             #se periptosi pou o xristis thelei na eisagei gramma sto board
             elif self.tags2 in self.rects and self.rects[self.tags2][2]:
                 self.canvas.itemconfigure(self.rects[self.tags2][1], font=("Arial", 35), anchor='center', text= self.transfer_letter)
                 self.canvas.itemconfigure(self.rects[self.tags2][0], fill= self.transfer_color )
-                self.canvas.itemconfigure(self.player_letters[self.tags1][0], outline = "white", fill = "black")
-                self.canvas.itemconfigure(self.player_letters[self.tags1][1], text= "")
-                self.player_letters[self.tags1][2] = True
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][0], outline = "white", fill = "black")
+                self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= "")
+                self.player_tiles[self.tags1][2] = True
                 self.rects[self.tags2][2] = False
                 self.transfer = False
-            #se periptosi pou xristis patisei allou(work in progress)
-            else:
-                self.canvas.itemconfigure(self.player_letters[self.tags1][0], fill = self.transfer_color)
-                self.transfer = False
+
+        
+
 
         
 if __name__ == "__main__":
