@@ -10,12 +10,12 @@ from player import Player
 class Board(Tk):
     def __init__(self):
         super().__init__()
-
+        
         self.title("Scrabble")
         self.geometry("1520x980")
         self.configure(background="lightgrey")
         self.canvas = Canvas(self, width=800, height=910, highlightthickness = 0, background= "lightgrey")
-        self.canvas.pack(side = "left", fill= BOTH)
+        self.canvas.pack(side = "left", fill= BOTH)        
 
         self.bag = Letters_bag()
         self.check = Word_check()
@@ -104,9 +104,6 @@ class Board(Tk):
             self.p_x1 += 50
             self.p_height += 50
 
-
-        self.canvas.bind('<Button-1>', self.on_click)
-        
         #main
         self.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
         while True:
@@ -127,6 +124,8 @@ class Board(Tk):
             #     #paizei o xristis
             #     self.turn = 0
 
+        self.canvas.bind('<Button-1>', self.on_click)
+        
     #methodos gia tin metafora tou grammatos meso tou pontikiou tou xristi
     def on_click(self, event):
         
@@ -167,6 +166,13 @@ class Board(Tk):
                 self.rects[self.tags2][2] = False
                 self.transfer = False
 
+
+
+    #methodos gia ton elegxo tis leksis tou xristi
+    def check_word(self):
+        self.player.prepare_coords()
+        self.player.validate_coords()
+        
         
 
 

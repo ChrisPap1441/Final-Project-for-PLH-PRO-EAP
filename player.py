@@ -9,6 +9,8 @@ class Player:
         self.y_axis = None
         self.word_start = None
         self.word_finish = None
+        self.word_axis = None
+        self.first_check = None
 
     #taksinomoume tis listes me tis suntetagmenes
     def prepare_coords(self):
@@ -23,10 +25,10 @@ class Player:
             self.x_coords[min_coord_x] = temp
 
         for coord_y in range(len(self.y_coords)):
-        min_coord_y = coord_y
-        for j in range(coord_y + 1, len(self.y_coords)):
-            if self.y_coords[min_coord_y] > self.y_coords[j]:
-                min_coord_y = j
+            min_coord_y = coord_y
+            for j in range(coord_y + 1, len(self.y_coords)):
+                if self.y_coords[min_coord_y] > self.y_coords[j]:
+                    min_coord_y = j
             temp = self.y_coords[coord_y]   
             self.y_coords[coord_y] = self.y_coords[min_coord_y]
             self.y_coords[min_coord_y] = temp
@@ -44,5 +46,29 @@ class Player:
                 break
         self.y_axis = True
 
+    def process_coords(self):
+        if self.y_axis == True and self.x_axis == False:
+            self.word_start = self.y_coords = [0]
+            self.word_finish = self.y_coords = [len(self.y_coords)-1]
+            self.word_axis = self.x_coords = [0]
+            self.first_check = True
+        elif self.x_axis == True and self.y_axis == False:
+            self.word_start = self.x_coords = [0]
+            self.word_finish = self.x_coords = [len(self.y_coords)-1]
+            self.word_axis = self.y_coords = [0]
+            self.first_check = True
+        else:
+            self.first_check = False
 
+    def reset_values(self):
+        self.hands_letters.clear()
+        self.used_letters.clear()
+        self.x_coords.clear()
+        self.y_coords.clear()
+        self.x_axis = None
+        self.y_axis = None
+        self.word_start = None
+        self.word_finish = None
+        self.word_axis = None
+        self.first_check = None
     
