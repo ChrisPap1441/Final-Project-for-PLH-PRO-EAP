@@ -172,6 +172,36 @@ class Board(Tk):
     def check_word(self):
         self.player.prepare_coords()
         self.player.validate_coords()
+        if self.player.first_check:
+            #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
+            if self.y_axis:
+                while self.player.word_start != -1:
+                    if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False
+                        self.player.word_start -=1
+                    else:
+                        break
+
+                while self.player.word_start != 15:
+                    if self.rects[f"{self.player.word_axis},{self.player.word_start + 1}"][2] == False
+                        self.player.word_start +=1
+                    else:
+                        break
+            else:
+                #elegxoume se periptosi pou i leksi einai orizontia
+                while self.player.word_start != -1:
+                    if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False
+                        self.player.word_start -=1
+                    else:
+                        break
+
+                while self.player.word_start != 15:
+                    if self.rects[f"{self.player.word_start + 1},{self.player.word_axis}"][2] == False
+                        self.player.word_start +=1
+                    else:
+                        break
+
+        else:
+            self.player.reset_values()
         
         
 
