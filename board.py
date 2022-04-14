@@ -107,7 +107,7 @@ class Board(Tk):
         #main
         self.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
         while True:
-            if self.first_round == True:
+            if self.first_round:
                 for i in range(7):
                     self.computer.hands_letters.append(self.bag.pick_letter())
                     self.player.hands_letters.append(self.bag.pick_letter())
@@ -176,30 +176,44 @@ class Board(Tk):
             #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
             if self.y_axis:
                 while self.player.word_start != -1:
-                    if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False
+                    if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
                         self.player.word_start -=1
                     else:
                         break
 
                 while self.player.word_start != 15:
-                    if self.rects[f"{self.player.word_axis},{self.player.word_start + 1}"][2] == False
+                    if self.rects[f"{self.player.word_axis},{self.player.word_start + 1}"][2] == False:
                         self.player.word_start +=1
                     else:
                         break
+
+                #dimiourgoume tin leksi tou xristi
+                for letter in range(self.word_start, self.word_finish+1):
+                    self.word_letters.append(self.rects_list[letter][self.word_axis])
             else:
                 #elegxoume se periptosi pou i leksi einai orizontia
                 while self.player.word_start != -1:
-                    if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False
+                    if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
                         self.player.word_start -=1
                     else:
                         break
 
                 while self.player.word_start != 15:
-                    if self.rects[f"{self.player.word_start + 1},{self.player.word_axis}"][2] == False
+                    if self.rects[f"{self.player.word_start + 1},{self.player.word_axis}"][2] == False:
                         self.player.word_start +=1
                     else:
                         break
 
+                #dimiourgoume tin leksi tou xristi
+                for letter in range(self.word_start, self.word_finish+1):
+                    self.player.word_letters.append(self.rects_list[self.word_axis][letter])
+
+            if self.rects["7,7"][2] == False:
+                self.player.word = "".join(self.player.word_letters)
+                if self.check.check_for_valid_word(self.player.word):
+                    pass
+            else:
+                self.player.reset_values()
         else:
             self.player.reset_values()
         
