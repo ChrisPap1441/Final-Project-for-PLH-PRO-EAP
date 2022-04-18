@@ -3,9 +3,11 @@ import random
 class Letters_bag:
     def __init__(self):
         self.letters_bag = []
-        self.create_letters()
+        self.prepare_letters()
+        self.letters_points = {}
+        self.prepare_points()
 
-    def create_letters(self):
+    def prepare_letters(self):
         self.letters_bag.extend(["Ζ", "Θ", "Ξ", "Ψ", "Β", "Φ", "Χ"])
         for i in range(2):
             self.letters_bag.extend(["Γ", "Δ"])
@@ -26,6 +28,20 @@ class Letters_bag:
         for i in range(12):
             self.letters_bag.extend(["Α"])
     
+    def prepare_points(self):
+        for key in ["Α", "Ε", "Η", "Ι", "Ν", "Ο", "Σ", "Τ"]:
+            self.letters_points[key] = 1
+        for key in ["Κ", "Π", "Ρ", "Υ"]
+            self.letters_points[key] = 2
+        for key in ["Λ", "Μ", "Ω"]
+            self.letters_points[key] = 3
+        for key in ["Γ", "Δ"]
+            self.letters_points[key] = 4
+        for key in ["Β", "Φ", "Χ"]
+            self.letters_points[key] = 8
+        for key in ["Ζ", "Θ", "Ξ", "Ψ"]
+            self.letters_points[key] = 10
+
     def pick_letter(self):
         random.shuffle(self.letters_bag) #anakateuoume ta grammata
 
