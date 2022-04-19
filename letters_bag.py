@@ -31,15 +31,15 @@ class Letters_bag:
     def prepare_points(self):
         for key in ["Α", "Ε", "Η", "Ι", "Ν", "Ο", "Σ", "Τ"]:
             self.letters_points[key] = 1
-        for key in ["Κ", "Π", "Ρ", "Υ"]
+        for key in ["Κ", "Π", "Ρ", "Υ"]:
             self.letters_points[key] = 2
-        for key in ["Λ", "Μ", "Ω"]
+        for key in ["Λ", "Μ", "Ω"]:
             self.letters_points[key] = 3
-        for key in ["Γ", "Δ"]
+        for key in ["Γ", "Δ"]:
             self.letters_points[key] = 4
-        for key in ["Β", "Φ", "Χ"]
+        for key in ["Β", "Φ", "Χ"]:
             self.letters_points[key] = 8
-        for key in ["Ζ", "Θ", "Ξ", "Ψ"]
+        for key in ["Ζ", "Θ", "Ξ", "Ψ"]:
             self.letters_points[key] = 10
 
     def pick_letter(self):
