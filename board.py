@@ -58,7 +58,7 @@ class Board(tk.Tk):
         pass_button.place(x = 900, y = 650)
         end_game_button = tk.Button(self, text="Τερματισμός παιχνιδιού", command=self.check_word)
         end_game_button.place(x = 900, y = 700)
-        exit_button = tk.Button(self, text="Κλείσιμο της εφαμοργής", command=self.destroy)
+        exit_button = tk.Button(self, text="Κλείσιμο της εφαρμογής", command=self.destroy)
         exit_button.place(x = 1300, y = 900)
         #-----------Letter's Points---------------#
         letters_points = tk.Label(self, background= "lightgrey", text = "ΠΟΝΤΟΙ\nΑ = 1\nΒ = 8\nΓ = 4\nΔ = 4\nΕ = 1\n Ζ = 10\nΗ = 1\nΘ = 4\nΙ = 1\nΚ = 2\nΛ = 3\nΜ = 3\nΝ = 1\n Ξ = 10\nΟ = 1\nΠ = 2\nΡ = 2\nΣ = 1\nΤ = 1\nΥ = 2\nΦ = 8\nΧ = 8\n Ψ = 10\nΩ = 3", font= 55)
