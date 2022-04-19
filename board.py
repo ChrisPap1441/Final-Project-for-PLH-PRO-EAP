@@ -1,26 +1,43 @@
 import sys
 sys.dont_write_bytecode = True #gia na min dimiourgite se kathe ektelesi o fakelos pycache
 import random
-from tkinter import *
+import tkinter as tk
+from PIL import ImageTk , Image
 from letters_bag import Letters_bag
 from word_check import Word_check
 from player import Player
 
 
-class Board(Tk):
+class Board(tk.Tk):
     def __init__(self):
         super().__init__()
-        
-        self.title("Scrabble")
-        self.geometry("1520x980")
-        self.configure(background="lightgrey")
-        self.canvas = Canvas(self, width=800, height=910, highlightthickness = 0, background= "lightgrey")
-        self.canvas.pack(side = "left", fill= BOTH)        
-
         self.bag = Letters_bag()
         self.check = Word_check()
         self.computer = Player()
         self.player = Player()
+
+        self.title("Scrabble")
+        self.geometry("1520x980")
+        self.configure(background="lightgrey")
+        self.canvas = tk.Canvas(self, width=800, height=910, highlightthickness = 0, background= "lightgrey")
+        self.canvas.place(x=0, y= 0)
+        self.logo_image = Image.open("Scrabble.png")
+        self.resized_logo = self.logo_image.resize((300, 125), Image.Resampling.LANCZOS)
+        self.new_logo = ImageTk.PhotoImage(self.resized_logo)
+        self.logo = tk.Label(self, background= "lightgrey", image = self.new_logo, width= 500, height = 100)
+        self.logo.place(x= 950, y = 50)
+        self.highscore = tk.Label(self, background= "lightgrey", text = "SCORE:", font= 55)
+        self.highscore.place(x = 900, y =200)
+        self.computer_score = tk.Label(self, background= "lightgrey", text = "Computer:", font= 55)
+        self.computer_score.place(x = 900, y =220)
+        self.computer_score_number = tk.Label(self, background= "white", text = f"{self.computer.highscore}", font= 55)
+        self.computer_score_number.place(x = 1000, y =220)
+        self.player_score = tk.Label(self, background= "lightgrey", text = "Player:", font= 55)
+        self.player_score.place(x = 900, y =240)
+        self.player_score_number = tk.Label(self, background= "white", text = f"{self.player.highscore}", font= 55)
+        self.player_score_number.place(x = 1000, y =220)
+
+        
         self.turn = None
         self.first_round = True
         
