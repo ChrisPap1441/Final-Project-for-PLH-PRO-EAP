@@ -47,7 +47,22 @@ class Board(tk.Tk):
         self.final_bag.place(x= 1200, y = 220)
         self.bag_letters_number = tk.Label(self, background= "white", borderwidth = 2, relief = "solid", text = f"{len(self.bag.letters_bag)}", font= 55)
         self.bag_letters_number.place(x = 1280, y =290)
-
+        #----------Buttons--------------#
+        check_word_button = tk.Button(self, text="Έλεγχος λέξης", command=self.check_word)
+        check_word_button.place(x = 900, y = 500)
+        discard_button = tk.Button(self, text="Πέταξε 1 γράμμα", command=self.check_word)
+        discard_button.place(x = 900, y = 550)
+        refund_button = tk.Button(self, text="Αναίρεση κίνησης", command=self.check_word)
+        refund_button.place(x = 900, y = 600)
+        pass_button = tk.Button(self, text="Πάσο", command=self.check_word)
+        pass_button.place(x = 900, y = 650)
+        end_game_button = tk.Button(self, text="Τερματισμός παιχνιδιού", command=self.check_word)
+        end_game_button.place(x = 900, y = 700)
+        exit_button = tk.Button(self, text="Κλείσιμο της εφαμοργής", command=self.destroy)
+        exit_button.place(x = 1300, y = 900)
+        #-----------Letter's Points---------------#
+        letters_points = tk.Label(self, background= "lightgrey", text = "ΠΟΝΤΟΙ\nΑ = 1\nΒ = 8\nΓ = 4\nΔ = 4\nΕ = 1\n Ζ = 10\nΗ = 1\nΘ = 4\nΙ = 1\nΚ = 2\nΛ = 3\nΜ = 3\nΝ = 1\n Ξ = 10\nΟ = 1\nΠ = 2\nΡ = 2\nΣ = 1\nΤ = 1\nΥ = 2\nΦ = 8\nΧ = 8\n Ψ = 10\nΩ = 3", font= 55)
+        letters_points.place(x = 1300, y = 400)
         
         self.turn = None
         self.first_round = True
