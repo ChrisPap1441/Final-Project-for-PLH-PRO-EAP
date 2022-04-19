@@ -19,23 +19,34 @@ class Board(tk.Tk):
         self.title("Scrabble")
         self.geometry("1520x980")
         self.configure(background="lightgrey")
+        #-------------Canvas-----------------#
         self.canvas = tk.Canvas(self, width=800, height=910, highlightthickness = 0, background= "lightgrey")
         self.canvas.place(x=0, y= 0)
+        #-----------Scrabble logo------------#
         self.logo_image = Image.open("Scrabble.png")
         self.resized_logo = self.logo_image.resize((300, 125), Image.Resampling.LANCZOS)
         self.new_logo = ImageTk.PhotoImage(self.resized_logo)
         self.logo = tk.Label(self, background= "lightgrey", image = self.new_logo, width= 500, height = 100)
         self.logo.place(x= 950, y = 50)
-        self.highscore = tk.Label(self, background= "lightgrey", text = "SCORE:", font= 55)
-        self.highscore.place(x = 900, y =200)
+        #-----------Computer & Player Scores--------#
+        self.highscore = tk.Label(self, background= "lightgrey", text = "SCORE", font= 55)
+        self.highscore.place(x = 920, y =250)
         self.computer_score = tk.Label(self, background= "lightgrey", text = "Computer:", font= 55)
-        self.computer_score.place(x = 900, y =220)
-        self.computer_score_number = tk.Label(self, background= "white", text = f"{self.computer.highscore}", font= 55)
-        self.computer_score_number.place(x = 1000, y =220)
+        self.computer_score.place(x = 900, y =280)
+        self.computer_score_number = tk.Label(self, background= "white", borderwidth = 2, relief = "solid", text = f"{self.computer.highscore}", font= 55)
+        self.computer_score_number.place(x = 1000, y =280)
         self.player_score = tk.Label(self, background= "lightgrey", text = "Player:", font= 55)
-        self.player_score.place(x = 900, y =240)
-        self.player_score_number = tk.Label(self, background= "white", text = f"{self.player.highscore}", font= 55)
-        self.player_score_number.place(x = 1000, y =220)
+        self.player_score.place(x = 900, y =300)
+        self.player_score_number = tk.Label(self, background= "white", borderwidth = 2, relief = "solid", text = f"{self.player.highscore}", font= 55)
+        self.player_score_number.place(x = 1000, y =300)
+        #----------Letter's Bag--------------#
+        self.bag_image = Image.open("bag-of-tiles.png")
+        self.resized_bag = self.bag_image.resize((200, 200), Image.Resampling.LANCZOS)
+        self.new_bag = ImageTk.PhotoImage(self.resized_bag)
+        self.final_bag = tk.Label(self, background= "lightgrey", image = self.new_bag, width= 200, height = 200)
+        self.final_bag.place(x= 1200, y = 220)
+        self.bag_letters_number = tk.Label(self, background= "white", borderwidth = 2, relief = "solid", text = f"{len(self.bag.letters_bag)}", font= 55)
+        self.bag_letters_number.place(x = 1280, y =290)
 
         
         self.turn = None
