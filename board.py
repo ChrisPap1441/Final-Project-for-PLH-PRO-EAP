@@ -16,6 +16,7 @@ class Board(tk.Tk):
         self.computer = Player()
         self.player = Player()
 
+        #------------window------------------#
         self.title("Scrabble")
         self.geometry("1520x980")
         self.configure(background="lightgrey")
@@ -61,8 +62,8 @@ class Board(tk.Tk):
         exit_button = tk.Button(self, text="Κλείσιμο της εφαρμογής", command=self.destroy)
         exit_button.place(x = 1300, y = 900)
         #-----------Letter's Points---------------#
-        letters_points = tk.Label(self, background= "lightgrey", text = "ΠΟΝΤΟΙ\nΑ = 1\nΒ = 8\nΓ = 4\nΔ = 4\nΕ = 1\n Ζ = 10\nΗ = 1\nΘ = 4\nΙ = 1\nΚ = 2\nΛ = 3\nΜ = 3\nΝ = 1\n Ξ = 10\nΟ = 1\nΠ = 2\nΡ = 2\nΣ = 1\nΤ = 1\nΥ = 2\nΦ = 8\nΧ = 8\n Ψ = 10\nΩ = 3", font= 55)
-        letters_points.place(x = 1300, y = 400)
+        letters_points = tk.Label(self, background= "lightgrey", width=30, borderwidth = 2, relief = "solid", text = "ΠΟΝΤΟΙ\nΑ = 1        Ν = 1\nΒ = 8        Ξ = 10\nΓ = 4        Ο = 1\nΔ = 4        Π = 2\nΕ = 1        Ρ = 2\nΖ = 10        Τ = 1\nΗ = 1        Σ = 1\nΘ = 4        Υ = 2\nΙ = 1        Φ = 8\nΚ = 2        Χ = 8\nΛ = 3        Ψ = 10\nΜ = 3        Ω = 3", font= 55)
+        letters_points.place(x = 1170, y = 500)
         
         self.turn = None
         self.first_round = True
