@@ -1,6 +1,7 @@
 class Player:
     def __init__(self):
         self.highscore = 0
+        self.current_word_score = 0
         self.hands_letters = [] #ta grammata pou exei sto xeri tou
         self.used_letters = [] # ta grammata pou einai na valei sto board
         self.word_letters = []
