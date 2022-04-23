@@ -6,7 +6,7 @@ from PIL import ImageTk , Image
 from letters_bag import Letters_bag
 from word_check import Word_check
 from player import Player
-
+import special_tiles
 
 class Board(tk.Tk):
     def __init__(self):
@@ -51,13 +51,13 @@ class Board(tk.Tk):
         #----------Buttons--------------#
         check_word_button = tk.Button(self, text="Έλεγχος λέξης", command=self.check_word)
         check_word_button.place(x = 900, y = 500)
-        discard_button = tk.Button(self, text="Πέταξε 1 γράμμα", command=self.check_word)
+        discard_button = tk.Button(self, text="Πέταξε 1 γράμμα", command=self.discard_letter)
         discard_button.place(x = 900, y = 550)
-        refund_button = tk.Button(self, text="Αναίρεση κίνησης", command=self.check_word)
+        refund_button = tk.Button(self, text="Αναίρεση κίνησης", command=self.cancel_move)
         refund_button.place(x = 900, y = 600)
-        pass_button = tk.Button(self, text="Πάσο", command=self.check_word)
+        pass_button = tk.Button(self, text="Πάσο", command=self.pass_round)
         pass_button.place(x = 900, y = 650)
-        end_game_button = tk.Button(self, text="Τερματισμός παιχνιδιού", command=self.check_word)
+        end_game_button = tk.Button(self, text="Τερματισμός παιχνιδιού", command=self.end_current_game)
         end_game_button.place(x = 900, y = 700)
         exit_button = tk.Button(self, text="Κλείσιμο της εφαρμογής", command=self.destroy)
         exit_button.place(x = 1300, y = 900)
@@ -94,27 +94,23 @@ class Board(tk.Tk):
             for y in range(15):
                 self.x1+=50
                 self.height += 50
-                if ((x==0 and y == 0) or (x==0 and y == 7) or (x==0 and y == 14) or (x==7 and y == 0) or (x==7 and y == 14) or (x==14 and y == 0) or (x==14 and y == 7) or (x==14 and y == 14)):
+                if special_tiles.triple_word(x, y):
                     #keli gia leksi triplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="red", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
-                elif((x==1 and y == 5) or (x==1 and y == 9) or (x==5 and y == 1) or (x==5 and y == 5) or (x==5 and y == 9) or (x==5 and y == 13) or (x==9 and y == 1) or (x==9 and y == 5)
-                    or (x==9 and y == 9) or (x==9 and y == 13) or (x==13 and y == 5) or (x==13 and y == 9)):
+                elif special_tiles.triple_letter(x, y):
                     #keli gia gramma triplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="blue", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
-                elif((x==0 and y == 3) or (x==0 and y == 11) or (x==2 and y == 6) or (x==2 and y == 8) or (x==3 and y == 0) or (x==3 and y == 7) or (x==3 and y == 14) or (x==6 and y == 2)
-                    or (x==6 and y == 6) or (x==6 and y == 8) or (x==6 and y == 12) or (x==7 and y == 3) or (x==7 and y == 11) or (x==8 and y == 2) or (x==8 and y == 6) or (x==8 and y == 8) or (x==8 and y == 12)
-                    or (x==11 and y == 0) or (x==11 and y == 7) or (x==11 and y == 14) or (x==12 and y == 6) or (x==12 and y == 8) or (x==14 and y == 3) or (x==14 and y == 11)):
+                elif special_tiles.double_letter(x, y):
                     #keli gia gramma diplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="light blue", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
-                elif((x==1 and y == 1) or (x==1 and y == 13) or (x==2 and y == 2) or (x==2 and y == 12) or (x==3 and y == 3) or (x==3 and y == 11) or (x==4 and y == 4) or (x==4 and y == 10)
-                    or (x==10 and y == 4) or (x==10 and y == 10) or (x==11 and y == 3) or (x==11 and y == 11) or (x==12 and y == 2) or (x==12 and y == 12) or (x==13 and y == 1) or (x==13 and y == 13) ):
+                elif special_tiles.double_word(x,y):
                     #keli gia leksi diplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="light pink", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
-                elif(x==7 and y == 7):
+                elif special_tiles.center(x, y):
                     #kentriko keli
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="light pink", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="ΑΡΧΗ", tags= f"{x},{y}")
@@ -260,9 +256,22 @@ class Board(tk.Tk):
                 self.player.reset_values()
         else:
             self.player.reset_values()
-        
-        
 
+    #methodos gia na paei passo o paiktis
+    def pass_round():
+        pass
+
+    #methodos gia na kanei anairesi o paiktis
+    def cancel_move():
+        pass    
+
+    #methodos gia na petaksei ena gramma o paiktis
+    def discard_letter():
+        pass    
+    
+    #methodos gia na teleiosei to paixnidi poy paizei o xristis
+    def end_current_game():
+        pass
 
         
 if __name__ == "__main__":
