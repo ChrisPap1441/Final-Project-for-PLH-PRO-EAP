@@ -143,27 +143,7 @@ class Board(tk.Tk):
             self.player_tiles[f"{i}"] = [player_tile_rect, player_tile_txt, player_tile_empty]
             self.p_x1 += 50
             self.p_height += 50
-
-        #main
-        self.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
-        while True:
-            if self.first_round:
-                for i in range(7):
-                    self.computer.hands_letters.append(self.bag.pick_letter())
-                    self.player.hands_letters.append(self.bag.pick_letter())
-                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][1], anchor='center', text= self.player.hands_letters[i])
-                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][0], outline = "black", fill= self.transfer_color)
-                    self.player_tiles[f"{i}"][2] = False
-            self.first_round == False
-            
-            
-            #if self.turn == 0:
-                #paizei o upologistis
-                #self.turn = 1
-            #else:
-                #paizei o xristis
-                #self.turn = 0
-
+              
         self.canvas.bind('<Button-1>', self.on_click)
         
     #methodos gia tin metafora tou grammatos meso tou pontikiou tou xristi
@@ -205,6 +185,10 @@ class Board(tk.Tk):
                 self.player_tiles[self.tags1][2] = True
                 self.rects[self.tags2][2] = False
                 self.transfer = False
+                coords = self.tags2.split(",")
+                self.player.x_coords.append(int(coords[0]))
+                self.player.y_coords.append(int(coords[1]))
+                self.player.used_letters.append(self.transfer_letter)
 
 
 
@@ -212,9 +196,10 @@ class Board(tk.Tk):
     def check_word(self):
         self.player.prepare_coords()
         self.player.validate_coords()
+        self.player.process_coords()
         if self.player.first_check:
             #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
-            if self.y_axis:
+            if self.player.y_axis:
                 while self.player.word_start != -1:
                     if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
                         self.player.word_start -=1
@@ -245,11 +230,12 @@ class Board(tk.Tk):
                         break
 
                 #dimiourgoume tin leksi tou xristi
-                for letter in range(self.word_start, self.word_finish+1):
-                    self.player.word_letters.append(self.rects_list[self.word_axis][letter])
+                for letter in range(self.player.word_start, self.player.word_finish+1):
+                    self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
 
             if self.rects["7,7"][2] == False:
                 self.player.word = "".join(self.player.word_letters)
+                print(self.player.word)
                 if self.check.check_for_valid_word(self.player.word):
                     self.calculate_points()
                     self.turn = 0
@@ -278,30 +264,30 @@ class Board(tk.Tk):
         word_multiplier = 1
         if self.player.x_axis:
             for letter in range(self.word_start, self.word_finish+1):
-                if special.tiles.triple_word(self.word_axis, letter):
+                if special_tiles.triple_word(self.word_axis, letter):
                     word_multiplier = 3
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special.tiles.double_word(self.word_axis, letter):
+                elif special_tiles.double_word(self.word_axis, letter):
                     word_multiplier = 2
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special.tiles.triple_letter(self.word_axis, letter):
+                elif special_tiles.triple_letter(self.word_axis, letter):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 3)
-                elif special.tiles.double_letter(self.word_axis, letter):
+                elif special_tiles.double_letter(self.word_axis, letter):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 2)
                 
             self.player.highscore += (self.player.current_word_score * word_multiplier)
             self.player.current_word_score = 0
         else:
             for letter in range(self.word_start, self.word_finish+1):
-                if special.tiles.triple_word(letter, self.word_axis):
+                if special_tiles.triple_word(letter, self.word_axis):
                     word_multiplier = 3
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special.tiles.double_word(letter, self.word_axis):
+                elif special_tiles.double_word(letter, self.word_axis):
                     word_multiplier = 2
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special.tiles.triple_letter(letter, self.word_axis):
+                elif special_tiles.triple_letter(letter, self.word_axis):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 3)
-                elif special.tiles.double_letter(letter, self.word_axis):
+                elif special_tiles.double_letter(letter, self.word_axis):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 2)
                 
             self.player.highscore += (self.player.current_word_score * word_multiplier)
@@ -313,4 +299,31 @@ class Board(tk.Tk):
         
 if __name__ == "__main__":
     board = Board()
-    board.mainloop()
+    board.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
+    while True:
+        if board.first_round:
+            for i in range(7):
+                board.computer.hands_letters.append(board.bag.pick_letter())
+                board.player.hands_letters.append(board.bag.pick_letter())
+                board.canvas.itemconfigure(board.player_tiles[f"{i}"][1], anchor='center', text= board.player.hands_letters[i])
+                board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
+                board.player_tiles[f"{i}"][2] = False
+        board.first_round == False
+
+        
+        if board.turn == 0:
+            #paizei o upologistis
+            board.turn = 1
+        else:
+            #paizei o xristis
+            if len(board.player_tiles) < 7:
+                for i in range(len(board.player_tiles)):
+                    if board.player_tiles[f"{i}"][2]:
+                        board.player.hands_letters[i] = board.bag.pick_letter()
+                        board.canvas.itemconfigure(board.player_tiles[f"{i}"][1], anchor='center', text= board.player.hands_letters[i])
+                        board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
+                        board.player_tiles[f"{i}"][2] = False
+        
+        board.mainloop()
+
+        
