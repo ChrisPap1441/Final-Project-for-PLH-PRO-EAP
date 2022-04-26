@@ -35,12 +35,6 @@ class Player:
             temp = self.y_coords[coord_y]   
             self.y_coords[coord_y] = self.y_coords[min_coord_y]
             self.y_coords[min_coord_y] = temp
-        
-        for i in self.y_coords:
-            print(i)
-        for i in self.x_coords:
-            print(i)
-        print("1 coords are ready")
 
     def validate_coords(self):
         for coord_x in range(1, len(self.x_coords)):
@@ -53,30 +47,19 @@ class Player:
                 self.y_axis = False
                 break
 
-        print("2 coords are ready")
-        print(self.y_axis)
-        print(self.x_axis)
-
     def process_coords(self):
         if self.y_axis == True and self.x_axis == False:
-            self.word_start = self.y_coords[0]
-            self.word_finish = self.y_coords[len(self.y_coords)-1]
-            self.word_axis = self.x_coords[0]
-            self.first_check = True
-        elif self.x_axis == True and self.y_axis == False:
             self.word_start = self.x_coords[0]
             self.word_finish = self.x_coords[len(self.x_coords)-1]
             self.word_axis = self.y_coords[0]
             self.first_check = True
+        elif self.x_axis == True and self.y_axis == False:
+            self.word_start = self.y_coords[0]
+            self.word_finish = self.y_coords[len(self.y_coords)-1]
+            self.word_axis = self.x_coords[0]
+            self.first_check = True
         else:
             self.first_check = False
-        print(self.y_coords[0])
-        print(self.x_coords[0])
-        print("3 coords are ready")
-        print(self.word_start)
-        print(self.word_axis)
-        print(type(self.word_start))
-        type(self.word_axis)
 
     def reset_values(self):
         self.hands_letters.clear()

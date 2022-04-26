@@ -188,6 +188,7 @@ class Board(tk.Tk):
                 coords = self.tags2.split(",")
                 self.player.x_coords.append(int(coords[0]))
                 self.player.y_coords.append(int(coords[1]))
+                self.rects_list[int(coords[0])][int(coords[1])] = self.transfer_letter
                 self.player.used_letters.append(self.transfer_letter)
 
 
@@ -200,35 +201,35 @@ class Board(tk.Tk):
         if self.player.first_check:
             #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
             if self.player.y_axis:
-                while self.player.word_start != -1:
+                while self.player.word_start != 0:
                     if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
                         self.player.word_start -=1
                     else:
                         break
 
-                while self.player.word_start != 15:
-                    if self.rects[f"{self.player.word_axis},{self.player.word_start + 1}"][2] == False:
-                        self.player.word_start +=1
+                while self.player.word_finish != 14:
+                    if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
+                        self.player.word_finish +=1
                     else:
                         break
 
                 #dimiourgoume tin leksi tou xristi
-                for letter in range(self.word_start, self.word_finish+1):
-                    self.word_letters.append(self.rects_list[letter][self.word_axis])
+                for letter in range(self.player.word_start, self.player.word_finish+1):
+                    self.player.word_letters.append(self.rects_list[letter][self.player.word_axis])
             else:
                 #elegxoume se periptosi pou i leksi einai orizontia
-                while self.player.word_start != -1:
+                while self.player.word_start != 0:
                     if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
                         self.player.word_start -=1
                     else:
                         break
 
-                while self.player.word_start != 15:
-                    if self.rects[f"{self.player.word_start + 1},{self.player.word_axis}"][2] == False:
-                        self.player.word_start +=1
+                while self.player.word_finish != 14:
+                    if self.rects[f"{self.player.word_finish + 1},{self.player.word_axis}"][2] == False:
+                        self.player.word_finish +=1
                     else:
                         break
-
+                
                 #dimiourgoume tin leksi tou xristi
                 for letter in range(self.player.word_start, self.player.word_finish+1):
                     self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
@@ -237,8 +238,11 @@ class Board(tk.Tk):
                 self.player.word = "".join(self.player.word_letters)
                 print(self.player.word)
                 if self.check.check_for_valid_word(self.player.word):
+                    print("elegxos ponton")
                     self.calculate_points()
                     self.turn = 0
+                else:
+                    print("Word error")
             else:
                 self.player.reset_values()
         else:
@@ -263,34 +267,38 @@ class Board(tk.Tk):
     def calculate_points(self):
         word_multiplier = 1
         if self.player.x_axis:
-            for letter in range(self.word_start, self.word_finish+1):
-                if special_tiles.triple_word(self.word_axis, letter):
+            for letter in range(self.player.word_start, self.player.word_finish+1):
+                if special_tiles.triple_word(self.player.word_axis, letter):
                     word_multiplier = 3
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special_tiles.double_word(self.word_axis, letter):
+                elif special_tiles.double_word(self.player.word_axis, letter):
                     word_multiplier = 2
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special_tiles.triple_letter(self.word_axis, letter):
+                elif special_tiles.triple_letter(self.player.word_axis, letter):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 3)
-                elif special_tiles.double_letter(self.word_axis, letter):
+                elif special_tiles.double_letter(self.player.word_axis, letter):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 2)
                 
             self.player.highscore += (self.player.current_word_score * word_multiplier)
+            #self.Label.itemconfigure(self.computer_score_number, text = self.player.highscore)
+            print(self.player.highscore)
             self.player.current_word_score = 0
         else:
-            for letter in range(self.word_start, self.word_finish+1):
-                if special_tiles.triple_word(letter, self.word_axis):
+            for letter in range(self.player.word_start, self.player.word_finish+1):
+                if special_tiles.triple_word(letter, self.player.word_axis):
                     word_multiplier = 3
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special_tiles.double_word(letter, self.word_axis):
+                elif special_tiles.double_word(letter, self.player.word_axis):
                     word_multiplier = 2
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
-                elif special_tiles.triple_letter(letter, self.word_axis):
+                elif special_tiles.triple_letter(letter, self.player.word_axis):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 3)
-                elif special_tiles.double_letter(letter, self.word_axis):
+                elif special_tiles.double_letter(letter, self.player.word_axis):
                     self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 2)
                 
             self.player.highscore += (self.player.current_word_score * word_multiplier)
+            self.Label.itemconfigure(self.computer_score_number, text = self.player.highscore)
+            print(self.player.highscore)
             self.player.current_word_score = 0
 
 
