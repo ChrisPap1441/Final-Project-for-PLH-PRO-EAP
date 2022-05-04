@@ -49,4 +49,3 @@ class Letters_bag:
             return self.letters_bag.pop()
         else:
             return "!" #exoun teleiosei ta grammata ara teleionei kai to paixnidi
-        

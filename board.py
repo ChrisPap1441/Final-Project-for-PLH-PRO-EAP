@@ -185,6 +185,7 @@ class Board(tk.Tk):
                 self.player_tiles[self.tags1][2] = True
                 self.rects[self.tags2][2] = False
                 self.transfer = False
+                self.player.coords_cancel.append(self.tags2)
                 coords = self.tags2.split(",")
                 self.player.x_coords.append(int(coords[0]))
                 self.player.y_coords.append(int(coords[1]))
@@ -238,7 +239,6 @@ class Board(tk.Tk):
                 self.player.word = "".join(self.player.word_letters)
                 print(self.player.word)
                 if self.check.check_for_valid_word(self.player.word):
-                    print("elegxos ponton")
                     self.calculate_points()
                     self.turn = 0
                 else:
@@ -254,11 +254,60 @@ class Board(tk.Tk):
 
     #methodos gia na kanei anairesi o paiktis
     def cancel_move(self):
-        pass    
+        if len(self.player.coords_cancel) > 0:
+            cancel_tags = self.player.coords_cancel.pop()
+            cancel_coords = cancel_tags.split(",")
+            cancel_x = int(cancel_coords[0])
+            cancel_y = int(cancel_coords[1])
+            cancel_letter = self.canvas.itemcget(self.rects[cancel_tags][1], "text")
+            for i in range(7):
+                if self.player_tiles[f"{i}"][2]:
+                    self.player.hands_letters[i] = cancel_letter
+                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][1], anchor='center', text= self.player.hands_letters[i])
+                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][0], outline = "black", fill= self.transfer_color)
+                    self.player_tiles[f"{i}"][2] = False
+                    break
+            
+            if special_tiles.triple_word(cancel_x, cancel_y):
+                #keli gia leksi triplis aksias
+                self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="red")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.rects[cancel_tags][2] = True
+            elif special_tiles.triple_letter(cancel_x, cancel_y):
+                #keli gia gramma triplis aksias
+                self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="blue")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.rects[cancel_tags][2] = True
+            elif special_tiles.double_letter(cancel_x, cancel_y):
+                #keli gia gramma diplis aksias
+                self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light blue")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.rects[cancel_tags][2] = True
+            elif special_tiles.double_word(cancel_x,cancel_y):
+                #keli gia leksi diplis aksias
+                self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light pink")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.rects[cancel_tags][2] = True
+            elif special_tiles.center(cancel_x, cancel_y):
+                #kentriko keli
+                self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light pink")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="ΑΡΧΗ")
+                self.rects[cancel_tags][2] = True
+            else:
+                #ta upoloipa klasika kelia
+                self.canvas.itemconfigure(self.rects[cancel_tags][0], fil="green")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], anchor='center', text="")
+                self.rects[cancel_tags][2] = True
+            
 
     #methodos gia na petaksei ena gramma o paiktis
     def discard_letter(self):
-        pass    
+        if self.transfer:
+            self.canvas.itemconfigure(self.player_tiles[self.tags1][0], outline = "white", fill = "black")
+            self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= "")
+            self.player_tiles[self.tags1][2] = True
+            self.player.hands_letters[self.tags1] = ""
+            self.transfer = False
     
     #methodos gia na teleiosei to paixnidi poy paizei o xristis
     def end_current_game(self):
@@ -267,38 +316,52 @@ class Board(tk.Tk):
     def calculate_points(self):
         word_multiplier = 1
         if self.player.x_axis:
+            pos = 0
             for letter in range(self.player.word_start, self.player.word_finish+1):
                 if special_tiles.triple_word(self.player.word_axis, letter):
                     word_multiplier = 3
-                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
+                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
+                    pos += 1
                 elif special_tiles.double_word(self.player.word_axis, letter):
                     word_multiplier = 2
-                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
+                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
+                    pos += 1
                 elif special_tiles.triple_letter(self.player.word_axis, letter):
-                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 3)
+                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[pos]] * 3)
+                    pos += 1
                 elif special_tiles.double_letter(self.player.word_axis, letter):
-                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 2)
+                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[pos]] * 2)
+                    pos += 1
+                else:
+                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
+                    pos += 1
                 
             self.player.highscore += (self.player.current_word_score * word_multiplier)
-            #self.Label.itemconfigure(self.computer_score_number, text = self.player.highscore)
-            print(self.player.highscore)
+            self.player_score_number.configure(text = f"{self.player.highscore}")
             self.player.current_word_score = 0
         else:
+            pos = 0
             for letter in range(self.player.word_start, self.player.word_finish+1):
                 if special_tiles.triple_word(letter, self.player.word_axis):
                     word_multiplier = 3
-                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
+                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
+                    pos += 1
                 elif special_tiles.double_word(letter, self.player.word_axis):
                     word_multiplier = 2
-                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[letter]]
+                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
+                    pos += 1
                 elif special_tiles.triple_letter(letter, self.player.word_axis):
-                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 3)
+                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[pos]] * 3)
+                    pos += 1
                 elif special_tiles.double_letter(letter, self.player.word_axis):
-                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[letter]] * 2)
+                    self.player.current_word_score += (self.bag.letters_points[self.player.word_letters[pos]] * 2)
+                    pos += 1
+                else:
+                    self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
+                    pos += 1
                 
             self.player.highscore += (self.player.current_word_score * word_multiplier)
-            self.Label.itemconfigure(self.computer_score_number, text = self.player.highscore)
-            print(self.player.highscore)
+            self.player_score_number.configure(text = f"{self.player.highscore}")
             self.player.current_word_score = 0
 
 
@@ -316,8 +379,8 @@ if __name__ == "__main__":
                 board.canvas.itemconfigure(board.player_tiles[f"{i}"][1], anchor='center', text= board.player.hands_letters[i])
                 board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
                 board.player_tiles[f"{i}"][2] = False
+                board.bag_letters_number.configure(text = f"{len(board.bag.letters_bag)}")
         board.first_round == False
-
         
         if board.turn == 0:
             #paizei o upologistis

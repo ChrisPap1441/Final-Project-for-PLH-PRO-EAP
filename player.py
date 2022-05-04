@@ -5,6 +5,7 @@ class Player:
         self.hands_letters = [] #ta grammata pou exei sto xeri tou
         self.used_letters = [] # ta grammata pou einai na valei sto board
         self.word_letters = []
+        self.coords_cancel = []
         self.word = None
         self.x_coords = []
         self.y_coords = []
@@ -62,7 +63,7 @@ class Player:
             self.first_check = False
 
     def reset_values(self):
-        self.hands_letters.clear()
+        self.current_word_score = 0
         self.used_letters.clear()
         self.word_letters.clear()
         self.word = None
