@@ -97,23 +97,23 @@ class Board(tk.Tk):
                 if special_tiles.triple_word(x, y):
                     #keli gia leksi triplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="red", tags= f"{x},{y}")
-                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
+                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, font=("ariel", 9), anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
                 elif special_tiles.triple_letter(x, y):
                     #keli gia gramma triplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="blue", tags= f"{x},{y}")
-                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
+                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, font=("ariel", 9), anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
                 elif special_tiles.double_letter(x, y):
                     #keli gia gramma diplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="light blue", tags= f"{x},{y}")
-                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
+                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, font=("ariel", 9), anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
                 elif special_tiles.double_word(x,y):
                     #keli gia leksi diplis aksias
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="light pink", tags= f"{x},{y}")
-                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
+                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, font=("ariel", 9), anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ", tags= f"{x},{y}")
                 elif special_tiles.center(x, y):
                     #kentriko keli
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fill="light pink", tags= f"{x},{y}")
-                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="ΑΡΧΗ", tags= f"{x},{y}")
+                    tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, font=("ariel", 9), anchor='center', text="ΑΡΧΗ", tags= f"{x},{y}")
                 else:
                     #ta upoloipa klasika kelia
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fil="green", tags= f"{x},{y}")
@@ -178,7 +178,7 @@ class Board(tk.Tk):
                 self.transfer = False
             #se periptosi pou o xristis thelei na eisagei gramma sto board
             elif self.tags2 in self.rects and self.rects[self.tags2][2] and self.turn == 1:
-                self.canvas.itemconfigure(self.rects[self.tags2][1], font=("Arial", 35), anchor='center', text= self.transfer_letter)
+                self.canvas.itemconfigure(self.rects[self.tags2][1], font=("ariel", 36), anchor='center', text= self.transfer_letter)
                 self.canvas.itemconfigure(self.rects[self.tags2][0], fill= self.transfer_color )
                 self.canvas.itemconfigure(self.player_tiles[self.tags1][0], outline = "white", fill = "black")
                 self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= "")
@@ -272,27 +272,27 @@ class Board(tk.Tk):
             if special_tiles.triple_word(cancel_x, cancel_y):
                 #keli gia leksi triplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="red")
-                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
             elif special_tiles.triple_letter(cancel_x, cancel_y):
                 #keli gia gramma triplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="blue")
-                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
             elif special_tiles.double_letter(cancel_x, cancel_y):
                 #keli gia gramma diplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light blue")
-                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
             elif special_tiles.double_word(cancel_x,cancel_y):
                 #keli gia leksi diplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light pink")
-                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
             elif special_tiles.center(cancel_x, cancel_y):
                 #kentriko keli
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light pink")
-                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("lucida ", 8), anchor='center', text="ΑΡΧΗ")
+                self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="ΑΡΧΗ")
                 self.rects[cancel_tags][2] = True
             else:
                 #ta upoloipa klasika kelia
