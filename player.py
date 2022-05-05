@@ -66,6 +66,7 @@ class Player:
         self.current_word_score = 0
         self.used_letters.clear()
         self.word_letters.clear()
+        self.coords_cancel.clear()
         self.word = None
         self.x_coords.clear()
         self.y_coords.clear()

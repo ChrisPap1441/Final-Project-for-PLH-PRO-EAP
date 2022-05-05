@@ -65,7 +65,7 @@ class Board(tk.Tk):
         letters_points = tk.Label(self, background= "lightgrey", width=30, borderwidth = 2, relief = "solid", text = "ΠΟΝΤΟΙ\nΑ = 1        Ν = 1\nΒ = 8        Ξ = 10\nΓ = 4        Ο = 1\nΔ = 4        Π = 2\nΕ = 1        Ρ = 2\nΖ = 10        Τ = 1\nΗ = 1        Σ = 1\nΘ = 4        Υ = 2\nΙ = 1        Φ = 8\nΚ = 2        Χ = 8\nΛ = 3        Ψ = 10\nΜ = 3        Ω = 3", font= 55)
         letters_points.place(x = 1170, y = 500)
         
-        self.turn = None
+        self.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
         self.first_round = True
         
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
@@ -143,8 +143,12 @@ class Board(tk.Tk):
             self.player_tiles[f"{i}"] = [player_tile_rect, player_tile_txt, player_tile_empty]
             self.p_x1 += 50
             self.p_height += 50
+        
               
         self.canvas.bind('<Button-1>', self.on_click)
+        
+        self.main()
+        #self.mainloop
         
     #methodos gia tin metafora tou grammatos meso tou pontikiou tou xristi
     def on_click(self, event):
@@ -241,17 +245,27 @@ class Board(tk.Tk):
                 if self.check.check_for_valid_word(self.player.word):
                     self.calculate_points()
                     self.turn = 0
+                    self.player.reset_values()
+                    self.main()
                 else:
                     print("Word error")
                     self.remove_word()
+                    self.main()
             else:
+                print("error1")
                 self.remove_word()
+                self.main()
         else:
+            print("error2")
+            print(self.player.first_check)
             self.remove_word()
+            self.main()
 
     #methodos gia na paei passo o paiktis
     def pass_round(self):
-        pass
+        self.remove_word()
+        self.turn = 0
+        self.main()
 
     #methodos gia na kanei anairesi o paiktis
     def cancel_move(self):
@@ -307,7 +321,7 @@ class Board(tk.Tk):
             self.canvas.itemconfigure(self.player_tiles[self.tags1][0], outline = "white", fill = "black")
             self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= "")
             self.player_tiles[self.tags1][2] = True
-            self.player.hands_letters[self.tags1] = ""
+            self.player.hands_letters[int(self.tags1)] = ""
             self.transfer = False
     
     #methodos gia na teleiosei to paixnidi poy paizei o xristis
@@ -371,13 +385,38 @@ class Board(tk.Tk):
         
         self.player.reset_values()
 
-
-
-
+    def main(self):
+        if self.first_round:
+            for i in range(7):
+                self.computer.hands_letters.append(self.bag.pick_letter())
+                self.player.hands_letters.append(self.bag.pick_letter())
+                self.canvas.itemconfigure(self.player_tiles[f"{i}"][1], anchor='center', text= self.player.hands_letters[i])
+                self.canvas.itemconfigure(self.player_tiles[f"{i}"][0], outline = "black", fill= self.transfer_color)
+                self.player_tiles[f"{i}"][2] = False
+                self.bag_letters_number.configure(text = f"{len(self.bag.letters_bag)}")
+        self.first_round = False
         
+        if self.turn == 0:
+            #paizei o upologistis
+            self.turn = 1
+            self.main()
+        else:
+            #paizei o xristis
+            for i in range(len(self.player_tiles)):
+                if self.player_tiles[f"{i}"][2]:
+                    self.player.hands_letters[i] = self.bag.pick_letter()
+                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][1], anchor='center', text= self.player.hands_letters[i])
+                    self.canvas.itemconfigure(self.player_tiles[f"{i}"][0], outline = "black", fill= self.transfer_color)
+                    self.player_tiles[f"{i}"][2] = False
+                    self.bag_letters_number.configure(text = f"{len(self.bag.letters_bag)}")
+            
+        
+        
+
+      
 if __name__ == "__main__":
     board = Board()
-    board.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
+    """ board.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
     while True:
         if board.first_round:
             for i in range(7):
@@ -387,7 +426,7 @@ if __name__ == "__main__":
                 board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
                 board.player_tiles[f"{i}"][2] = False
                 board.bag_letters_number.configure(text = f"{len(board.bag.letters_bag)}")
-        board.first_round == False
+        board.first_round = False
         
         if board.turn == 0:
             #paizei o upologistis
@@ -401,7 +440,7 @@ if __name__ == "__main__":
                         board.canvas.itemconfigure(board.player_tiles[f"{i}"][1], anchor='center', text= board.player.hands_letters[i])
                         board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
                         board.player_tiles[f"{i}"][2] = False
-        
-        board.mainloop()
+         """
+    board.mainloop()
 
         
