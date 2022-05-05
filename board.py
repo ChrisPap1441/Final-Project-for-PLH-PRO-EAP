@@ -243,10 +243,11 @@ class Board(tk.Tk):
                     self.turn = 0
                 else:
                     print("Word error")
+                    self.remove_word()
             else:
-                self.player.reset_values()
+                self.remove_word()
         else:
-            self.player.reset_values()
+            self.remove_word()
 
     #methodos gia na paei passo o paiktis
     def pass_round(self):
@@ -363,6 +364,12 @@ class Board(tk.Tk):
             self.player.highscore += (self.player.current_word_score * word_multiplier)
             self.player_score_number.configure(text = f"{self.player.highscore}")
             self.player.current_word_score = 0
+
+    def remove_word(self):
+        while len(self.player.coords_cancel) > 0:
+            self.cancel_move()
+        
+        self.player.reset_values()
 
 
 
