@@ -207,13 +207,13 @@ class Board(tk.Tk):
             #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
             if self.player.y_axis:
                 while self.player.word_start != 0:
-                    if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
+                    if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
                         self.player.word_start -=1
                     else:
                         break
 
                 while self.player.word_finish != 14:
-                    if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
+                    if self.rects[f"{self.player.word_finish + 1},{self.player.word_start - 1}"][2] == False:
                         self.player.word_finish +=1
                     else:
                         break
@@ -224,17 +224,19 @@ class Board(tk.Tk):
             else:
                 #elegxoume se periptosi pou i leksi einai orizontia
                 while self.player.word_start != 0:
-                    if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
+                    print(self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2])
+                    if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
                         self.player.word_start -=1
                     else:
                         break
-
+                
+                print(self.player.word_start)
                 while self.player.word_finish != 14:
-                    if self.rects[f"{self.player.word_finish + 1},{self.player.word_axis}"][2] == False:
+                    if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
                         self.player.word_finish +=1
                     else:
                         break
-                
+                print(self.player.word_finish)
                 #dimiourgoume tin leksi tou xristi
                 for letter in range(self.player.word_start, self.player.word_finish+1):
                     self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
@@ -242,10 +244,13 @@ class Board(tk.Tk):
             if self.rects["7,7"][2] == False:
                 self.player.word = "".join(self.player.word_letters)
                 print(self.player.word)
+                print(self.check.check_for_valid_word(self.player.word))
                 if self.check.check_for_valid_word(self.player.word):
                     self.calculate_points()
                     self.turn = 0
                     self.player.reset_values()
+                    print(self.player.word_start)
+                    print(self.player.word_finish)
                     self.main()
                 else:
                     print("Word error")
@@ -257,24 +262,29 @@ class Board(tk.Tk):
                 self.main()
         else:
             print("error2")
-            print(self.player.first_check)
             self.remove_word()
             self.main()
 
     #methodos gia na paei passo o paiktis
     def pass_round(self):
-        self.remove_word()
-        self.turn = 0
-        self.main()
+        if self.turn == 1:
+            self.remove_word()
+            self.turn = 0
+            self.main()
 
     #methodos gia na kanei anairesi o paiktis
     def cancel_move(self):
-        if len(self.player.coords_cancel) > 0:
+        if len(self.player.coords_cancel) > 0 and self.turn == 1:
             cancel_tags = self.player.coords_cancel.pop()
+            self.player.x_coords.pop()
+            self.player.y_coords.pop()
             cancel_coords = cancel_tags.split(",")
             cancel_x = int(cancel_coords[0])
             cancel_y = int(cancel_coords[1])
             cancel_letter = self.canvas.itemcget(self.rects[cancel_tags][1], "text")
+            self.player.used_letters.pop()
+            self.rects_list[cancel_x][cancel_y] = " "
+
             for i in range(7):
                 if self.player_tiles[f"{i}"][2]:
                     self.player.hands_letters[i] = cancel_letter
@@ -317,7 +327,7 @@ class Board(tk.Tk):
 
     #methodos gia na petaksei ena gramma o paiktis
     def discard_letter(self):
-        if self.transfer:
+        if self.transfer and self.turn == 1:
             self.canvas.itemconfigure(self.player_tiles[self.tags1][0], outline = "white", fill = "black")
             self.canvas.itemconfigure(self.player_tiles[self.tags1][1], text= "")
             self.player_tiles[self.tags1][2] = True
@@ -380,10 +390,11 @@ class Board(tk.Tk):
             self.player.current_word_score = 0
 
     def remove_word(self):
-        while len(self.player.coords_cancel) > 0:
-            self.cancel_move()
-        
-        self.player.reset_values()
+        if self.turn == 1:
+            while len(self.player.coords_cancel) > 0:
+                self.cancel_move()
+            
+            self.player.reset_values()
 
     def main(self):
         if self.first_round:
@@ -409,38 +420,10 @@ class Board(tk.Tk):
                     self.canvas.itemconfigure(self.player_tiles[f"{i}"][0], outline = "black", fill= self.transfer_color)
                     self.player_tiles[f"{i}"][2] = False
                     self.bag_letters_number.configure(text = f"{len(self.bag.letters_bag)}")
-            
-        
         
 
-      
 if __name__ == "__main__":
     board = Board()
-    """ board.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
-    while True:
-        if board.first_round:
-            for i in range(7):
-                board.computer.hands_letters.append(board.bag.pick_letter())
-                board.player.hands_letters.append(board.bag.pick_letter())
-                board.canvas.itemconfigure(board.player_tiles[f"{i}"][1], anchor='center', text= board.player.hands_letters[i])
-                board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
-                board.player_tiles[f"{i}"][2] = False
-                board.bag_letters_number.configure(text = f"{len(board.bag.letters_bag)}")
-        board.first_round = False
-        
-        if board.turn == 0:
-            #paizei o upologistis
-            board.turn = 1
-        else:
-            #paizei o xristis
-            if len(board.player_tiles) < 7:
-                for i in range(len(board.player_tiles)):
-                    if board.player_tiles[f"{i}"][2]:
-                        board.player.hands_letters[i] = board.bag.pick_letter()
-                        board.canvas.itemconfigure(board.player_tiles[f"{i}"][1], anchor='center', text= board.player.hands_letters[i])
-                        board.canvas.itemconfigure(board.player_tiles[f"{i}"][0], outline = "black", fill= board.transfer_color)
-                        board.player_tiles[f"{i}"][2] = False
-         """
     board.mainloop()
 
         
