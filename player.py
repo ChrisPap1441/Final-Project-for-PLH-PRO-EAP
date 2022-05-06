@@ -39,14 +39,20 @@ class Player:
 
     def validate_coords(self):
         for coord_x in range(1, len(self.x_coords)):
+           # print(coord_x)
             if self.x_coords[coord_x - 1] != self.x_coords[coord_x]:
                 self.x_axis = False
                 break
+        
+       # print(self.x_axis)
 
         for coord_y in range(1, len(self.y_coords)):
+            #print(coord_y)
             if self.y_coords[coord_y - 1] != self.y_coords[coord_y]:
                 self.y_axis = False
                 break
+        
+        #print(self.y_axis)
 
     def process_coords(self):
         if self.y_axis == True and self.x_axis == False:
@@ -70,8 +76,8 @@ class Player:
         self.word = None
         self.x_coords.clear()
         self.y_coords.clear()
-        self.x_axis = None
-        self.y_axis = None
+        self.x_axis = True
+        self.y_axis = True
         self.word_start = None
         self.word_finish = None
         self.word_axis = None
