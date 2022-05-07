@@ -6,6 +6,7 @@ class Player:
         self.used_letters = [] # ta grammata pou einai na valei sto board
         self.word_letters = []
         self.coords_cancel = []
+        self.previous_coords = []
         self.word = None
         self.x_coords = []
         self.y_coords = []
@@ -15,6 +16,7 @@ class Player:
         self.word_finish = None
         self.word_axis = None
         self.first_check = None
+        self.second_check = None
 
     #taksinomoume tis listes me tis suntetagmenes
     def prepare_coords(self):
@@ -73,6 +75,7 @@ class Player:
         self.used_letters.clear()
         self.word_letters.clear()
         self.coords_cancel.clear()
+        self.previous_coords.clear()
         self.word = None
         self.x_coords.clear()
         self.y_coords.clear()
@@ -82,4 +85,5 @@ class Player:
         self.word_finish = None
         self.word_axis = None
         self.first_check = None
+        self.second_check = None
     
