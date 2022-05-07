@@ -67,6 +67,7 @@ class Board(tk.Tk):
         
         self.turn = random.randint(0, 1) #klirosi gia to poios tha paiksei protos
         self.first_round = True
+        self.first_word = True
         
         #metavlites gia tin metakinisi grammaton(eite sto board, eite sta grammata tou xristi)
         self.tags1 = ""
@@ -119,7 +120,8 @@ class Board(tk.Tk):
                     tile_rect = self.canvas.create_rectangle(self.x1, self.y1, self.height, self.width, fil="green", tags= f"{x},{y}")
                     tile_txt = self.canvas.create_text((self.x1 + self.height)/ 2, (self.y1 + self.width)/2, anchor='center', text="", tags= f"{x},{y}")
                 board_tile_empty = True
-                self.rects[(f"{x},{y}")] = [tile_rect, tile_txt, board_tile_empty]
+                previous_round_letter = False
+                self.rects[(f"{x},{y}")] = [tile_rect, tile_txt, board_tile_empty, previous_round_letter]
                 self.rects_list[x].append(" ")
                 
 
@@ -200,70 +202,109 @@ class Board(tk.Tk):
 
     #methodos gia ton elegxo tis leksis tou xristi
     def check_word(self):
-        self.player.prepare_coords()
-        self.player.validate_coords()
-        self.player.process_coords()
-        if self.player.first_check:
-            #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
-            if self.player.y_axis:
-                while self.player.word_start != 0:
-                    if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
-                        self.player.word_start -=1
-                    else:
-                        break
-
-                while self.player.word_finish != 14:
-                    if self.rects[f"{self.player.word_finish + 1},{self.player.word_start - 1}"][2] == False:
-                        self.player.word_finish +=1
-                    else:
-                        break
-
-                #dimiourgoume tin leksi tou xristi
-                for letter in range(self.player.word_start, self.player.word_finish+1):
-                    self.player.word_letters.append(self.rects_list[letter][self.player.word_axis])
-            else:
-                #elegxoume se periptosi pou i leksi einai orizontia
-                while self.player.word_start != 0:
-                    print(self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2])
-                    if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
-                        self.player.word_start -=1
-                    else:
-                        break
+        if self.turn == 1:
+            if len(self.player.x_coords) == 1 and len(self.player.y_coords):
+                if self.rects[f"{self.player.x_coords[0] + 1},{self.player.y_coords[0]}"][2] == False:
+                    self.player.x_coords.append(self.player.x_coords[0] + 1)
+                    self.player.y_coords.append(self.player.y_coords[0])
+                elif self.rects[f"{self.player.x_coords[0] - 1},{self.player.y_coords[0]}"][2] == False:
+                    self.player.x_coords.append(self.player.x_coords[0] - 1)
+                    self.player.y_coords.append(self.player.y_coords[0])
+                elif self.rects[f"{self.player.x_coords[0]},{self.player.y_coords[0] + 1}"][2] == False:
+                    self.player.x_coords.append(self.player.x_coords[0])
+                    self.player.y_coords.append(self.player.y_coords[0] + 1)
+                elif self.rects[f"{self.player.x_coords[0] - 1},{self.player.y_coords[0] - 1}"][2] == False:
+                    self.player.x_coords.append(self.player.x_coords[0])
+                    self.player.y_coords.append(self.player.y_coords[0] - 1)
                 
-                print(self.player.word_start)
-                while self.player.word_finish != 14:
-                    if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
-                        self.player.word_finish +=1
-                    else:
-                        break
-                print(self.player.word_finish)
-                #dimiourgoume tin leksi tou xristi
-                for letter in range(self.player.word_start, self.player.word_finish+1):
-                    self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
+                self.player.prepare_coords()
+                self.player.validate_coords()
+                self.player.process_coords()
+            else:
+                self.player.prepare_coords()
+                self.player.validate_coords()
+                self.player.process_coords()
 
-            if self.rects["7,7"][2] == False:
+
+            if self.player.first_check:
+                #analoga me to an i leksi einai orizontia i katheti, tsekaroume ta diplana kelia gia na exoume tin olokliromeni leksi
+                if self.player.y_axis:
+                    while self.player.word_start != 0:
+                        if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
+                            self.player.word_start -=1
+                        else:
+                            break
+
+                    while self.player.word_finish != 14:
+                        if self.rects[f"{self.player.word_finish + 1},{self.player.word_axis}"][2] == False:
+                            self.player.word_finish +=1
+                        else:
+                            break
+
+                    #dimiourgoume tin leksi tou xristi
+                    for letter in range(self.player.word_start, self.player.word_finish+1):
+                        self.player.word_letters.append(self.rects_list[letter][self.player.word_axis])
+                        self.player.previous_coords.append(f"{letter},{self.player.word_axis}")
+                else:
+                    #elegxoume se periptosi pou i leksi einai orizontia
+                    while self.player.word_start != 0:
+                        print(self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2])
+                        if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
+                            self.player.word_start -=1
+                        else:
+                            break
+                    
+                    print(self.player.word_start)
+                    while self.player.word_finish != 14:
+                        if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
+                            self.player.word_finish +=1
+                        else:
+                            break
+                    print(self.player.word_finish)
+                    #dimiourgoume tin leksi tou xristi
+                    for letter in range(self.player.word_start, self.player.word_finish+1):
+                        self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
+                        self.player.previous_coords.append(f"{self.player.word_axis},{letter}")
+
+
                 self.player.word = "".join(self.player.word_letters)
                 print(self.player.word)
-                print(self.check.check_for_valid_word(self.player.word))
-                if self.check.check_for_valid_word(self.player.word):
-                    self.calculate_points()
-                    self.turn = 0
-                    self.player.reset_values()
-                    print(self.player.word_start)
-                    print(self.player.word_finish)
-                    self.main()
+                if self.rects["7,7"][2] == False and self.first_word:
+                    if self.check.check_for_valid_word(self.player.word):
+                        self.calculate_points()
+                        self.turn = 0
+                        for i in range(len(self.player.coords_cancel)):
+                            self.rects[self.player.coords_cancel[i]][3] = True
+                        self.first_word = False
+                        self.player.reset_values()
+                        self.main()
+                    else:
+                        print("Word error")
+                        self.remove_word()
+                elif self.first_word == False:
+                    for letter in self.player.previous_coords:
+                        if self.rects[letter][3]:
+                            self.player.second_check = True
+                            break
+                    if self.player.second_check:
+                        if self.check.check_for_valid_word(self.player.word):
+                            self.calculate_points()
+                            self.turn = 0
+                            for i in range(len(self.player.coords_cancel)):
+                                self.rects[self.player.coords_cancel[i]][3] = True
+                            self.player.reset_values()
+                            self.main()
+                        else:
+                            print("Word error 2")
+                            self.remove_word()
+                    else:
+                        self.remove_word()
                 else:
-                    print("Word error")
+                    print("error1")
                     self.remove_word()
-                    self.main()
             else:
-                print("error1")
+                print("error2")
                 self.remove_word()
-                self.main()
-        else:
-            print("error2")
-            self.remove_word()
-            self.main()
 
     #methodos gia na paei passo o paiktis
     def pass_round(self):
@@ -298,31 +339,37 @@ class Board(tk.Tk):
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="red")
                 self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="   ΛΕΞΗ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
+                self.rects[cancel_tags][3] = False
             elif special_tiles.triple_letter(cancel_x, cancel_y):
                 #keli gia gramma triplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="blue")
                 self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="ΓΡΑΜΜΑ\nΤΡΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
+                self.rects[cancel_tags][3] = False
             elif special_tiles.double_letter(cancel_x, cancel_y):
                 #keli gia gramma diplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light blue")
                 self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="ΓΡΑΜΜΑ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
+                self.rects[cancel_tags][3] = False
             elif special_tiles.double_word(cancel_x,cancel_y):
                 #keli gia leksi diplis aksias
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light pink")
                 self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="   ΛΕΞΗ\n ΔΙΠΛΗΣ\n   ΑΞΙΑΣ")
                 self.rects[cancel_tags][2] = True
+                self.rects[cancel_tags][3] = False
             elif special_tiles.center(cancel_x, cancel_y):
                 #kentriko keli
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fill="light pink")
                 self.canvas.itemconfigure(self.rects[cancel_tags][1], font=("ariel", 9), anchor='center', text="ΑΡΧΗ")
                 self.rects[cancel_tags][2] = True
+                self.rects[cancel_tags][3] = False
             else:
                 #ta upoloipa klasika kelia
                 self.canvas.itemconfigure(self.rects[cancel_tags][0], fil="green")
                 self.canvas.itemconfigure(self.rects[cancel_tags][1], anchor='center', text="")
                 self.rects[cancel_tags][2] = True
+                self.rects[cancel_tags][3] = False
             
 
     #methodos gia na petaksei ena gramma o paiktis
