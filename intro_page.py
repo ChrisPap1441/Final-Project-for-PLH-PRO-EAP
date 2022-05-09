@@ -1,38 +1,46 @@
-from tkinter import *
+import sys
+sys.dont_write_bytecode = True #gia na min dimiourgite se kathe ektelesi o fakelos pycache
+import tkinter as tk
 from PIL import ImageTk , Image
 
-window = Tk()
-window.title("Scrabble")
-window.geometry("1520x980")
-window.configure(background="lightgrey")
 
-#-----------Scrabble logo------------#
-window.logo_image = Image.open("Scrabble.png")
-window.resized_logo = window.logo_image.resize((500, 225), Image.Resampling.LANCZOS)
-window.new_logo = ImageTk.PhotoImage(window.resized_logo)
-window.logo = Label(window, background= "lightgrey", image = window.new_logo, width= 500, height = 225)
-window.logo.place(x= 480, y = 150)
+class IntroPage(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Scrabble")
+        self.geometry("1520x980")
+        self.configure(background="lightgrey")
 
-def start_game():
-    window.destroy()
-    import board.py
+        #-----------Scrabble logo------------#
+        self.logo_image = Image.open("Scrabble.png")
+        self.resized_logo = self.logo_image.resize((500, 225), Image.Resampling.LANCZOS)
+        self.new_logo = ImageTk.PhotoImage(self.resized_logo)
+        self.logo = tk.Label(self, background= "lightgrey", image = self.new_logo, width= 500, height = 225)
+        self.logo.place(x= 480, y = 150)
 
-def show_buttons_info():
-    pass
+        def start_game():
+            self.destroy()
+            from board import Board
+            board = Board()
+            board.mainloop()
 
-def game_rules():
-    pass
+        def show_buttons_info():
+            pass
 
-#----------Buttons--------------#
-new_game = Button(window, text="Νέο Παιχνίδι", command=start_game)
-new_game.place(x = 700, y = 550)
-controls_button = Button(window, text="Κουμπιά Παιχνιδιού", command=show_buttons_info)
-controls_button.place(x = 680, y = 600)
-game_rules_button = Button(window, text="Κανόνες Παιχνιδιού", command=game_rules)
-game_rules_button.place(x = 681, y = 650)
-exit_button = Button(window, text="Έξοδος", command=window.destroy)
-exit_button.place(x = 715, y = 700)
+        def game_rules():
+            pass
+
+        #----------Buttons--------------#
+        new_game = tk.Button(self, text="Νέο Παιχνίδι", command=start_game)
+        new_game.place(x = 700, y = 550)
+        controls_button = tk.Button(self, text="Κουμπιά Παιχνιδιού", command=show_buttons_info)
+        controls_button.place(x = 680, y = 600)
+        game_rules_button = tk.Button(self, text="Κανόνες Παιχνιδιού", command=game_rules)
+        game_rules_button.place(x = 681, y = 650)
+        exit_button = tk.Button(self, text="Έξοδος", command=self.destroy)
+        exit_button.place(x = 715, y = 700)
 
 
-
-window.mainloop()
+if __name__ == "__main__":
+    intro = IntroPage()
+    intro.mainloop()
