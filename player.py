@@ -1,6 +1,7 @@
 class Player:
     def __init__(self):
         self.highscore = 0
+        self.potential_points = []
         self.current_word_score = 0
         self.hands_letters = [] #ta grammata pou exei sto xeri tou
         self.used_letters = [] # ta grammata pou einai na valei sto board
@@ -8,8 +9,11 @@ class Player:
         self.coords_cancel = []
         self.previous_coords = []
         self.word = None
+        self.words_to_check = []
         self.x_coords = []
+        self.multi_words_x_coords = []
         self.y_coords = []
+        self.multi_words_y_coords = []
         self.x_axis = True
         self.y_axis = True
         self.word_start = None
@@ -17,6 +21,7 @@ class Player:
         self.word_axis = None
         self.first_check = None
         self.second_check = None
+        self.words_ready = True
 
     #taksinomoume tis listes me tis suntetagmenes
     def prepare_coords(self):
@@ -30,6 +35,8 @@ class Player:
             self.x_coords[coord_x] = self.x_coords[min_coord_x]
             self.x_coords[min_coord_x] = temp
 
+        
+        
         for coord_y in range(len(self.y_coords)):
             min_coord_y = coord_y
             for j in range(coord_y + 1, len(self.y_coords)):
@@ -39,22 +46,17 @@ class Player:
             self.y_coords[coord_y] = self.y_coords[min_coord_y]
             self.y_coords[min_coord_y] = temp
 
+
     def validate_coords(self):
         for coord_x in range(1, len(self.x_coords)):
-           # print(coord_x)
             if self.x_coords[coord_x - 1] != self.x_coords[coord_x]:
                 self.x_axis = False
                 break
-        
-       # print(self.x_axis)
 
         for coord_y in range(1, len(self.y_coords)):
-            #print(coord_y)
             if self.y_coords[coord_y - 1] != self.y_coords[coord_y]:
                 self.y_axis = False
                 break
-        
-        #print(self.y_axis)
 
     def process_coords(self):
         if self.y_axis == True and self.x_axis == False:
@@ -69,16 +71,25 @@ class Player:
             self.first_check = True
         else:
             self.first_check = False
+        
+
+    def add_points(self):
+        for i in self.potential_points:
+            self.highscore += i
 
     def reset_values(self):
+        self.potential_points.clear()
         self.current_word_score = 0
         self.used_letters.clear()
         self.word_letters.clear()
         self.coords_cancel.clear()
         self.previous_coords.clear()
         self.word = None
+        self.words_to_check.clear()
         self.x_coords.clear()
+        self.multi_words_x_coords.clear()
         self.y_coords.clear()
+        self.multi_words_y_coords.clear()
         self.x_axis = True
         self.y_axis = True
         self.word_start = None
@@ -86,4 +97,5 @@ class Player:
         self.word_axis = None
         self.first_check = None
         self.second_check = None
+        self.words_ready = True
     
