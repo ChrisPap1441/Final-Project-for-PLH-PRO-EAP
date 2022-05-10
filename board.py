@@ -7,6 +7,7 @@ from letters_bag import Letters_bag
 from word_check import Word_check
 from player import Player
 import special_tiles
+from intro_page import IntroPage
 
 class Board(tk.Tk):
     def __init__(self):
@@ -203,7 +204,10 @@ class Board(tk.Tk):
     #methodos gia ton elegxo tis leksis tou xristi
     def check_word(self):
         if self.turn == 1:
-            if len(self.player.x_coords) == 1 and len(self.player.y_coords):
+            if len(self.player.x_coords) == 1 and len(self.player.y_coords) == 1:
+                self.player.multi_words_x_coords =  self.player.x_coords.copy()
+                self.player.multi_words_y_coords =  self.player.y_coords.copy()  
+
                 if self.rects[f"{self.player.x_coords[0] + 1},{self.player.y_coords[0]}"][2] == False:
                     self.player.x_coords.append(self.player.x_coords[0] + 1)
                     self.player.y_coords.append(self.player.y_coords[0])
@@ -213,15 +217,18 @@ class Board(tk.Tk):
                 elif self.rects[f"{self.player.x_coords[0]},{self.player.y_coords[0] + 1}"][2] == False:
                     self.player.x_coords.append(self.player.x_coords[0])
                     self.player.y_coords.append(self.player.y_coords[0] + 1)
-                elif self.rects[f"{self.player.x_coords[0] - 1},{self.player.y_coords[0] - 1}"][2] == False:
+                elif self.rects[f"{self.player.x_coords[0]},{self.player.y_coords[0] - 1}"][2] == False:
                     self.player.x_coords.append(self.player.x_coords[0])
                     self.player.y_coords.append(self.player.y_coords[0] - 1)
-                
+            
+                  
                 self.player.prepare_coords()
                 self.player.validate_coords()
                 self.player.process_coords()
             else:
                 self.player.prepare_coords()
+                self.player.multi_words_x_coords =  self.player.x_coords.copy()
+                self.player.multi_words_y_coords =  self.player.y_coords.copy()
                 self.player.validate_coords()
                 self.player.process_coords()
 
@@ -245,41 +252,125 @@ class Board(tk.Tk):
                     for letter in range(self.player.word_start, self.player.word_finish+1):
                         self.player.word_letters.append(self.rects_list[letter][self.player.word_axis])
                         self.player.previous_coords.append(f"{letter},{self.player.word_axis}")
+
+                    self.player.word = "".join(self.player.word_letters)
+                    self.player.words_to_check.append(self.player.word)
+                    self.calculate_points()
+
+                    if self.first_word == False:
+                        self.player.word_letters.clear()
+                        self.player.x_axis = True
+                        self.player.y_axis = False
+                        for i in range(len(self.player.multi_words_x_coords)):
+                            if self.rects[f"{self.player.multi_words_x_coords[i]},{self.player.multi_words_y_coords[i] + 1}"][2] == False:
+                                self.player.word_start = self.player.multi_words_y_coords[i]
+                                self.player.word_finish = self.player.multi_words_y_coords[i] + 1
+                                self.player.word_axis = self.player.multi_words_x_coords[i]
+                            elif self.rects[f"{self.player.multi_words_x_coords[i]},{self.player.multi_words_y_coords[i] - 1}"][2] == False:
+                                self.player.word_start = self.player.multi_words_y_coords[i] - 1
+                                self.player.word_finish = self.player.multi_words_y_coords[i]
+                                self.player.word_axis = self.player.multi_words_x_coords[i]
+                            else:
+                                self.player.word_start = self.player.multi_words_y_coords[i]
+                                self.player.word_finish = self.player.multi_words_y_coords[i]
+                                self.player.word_axis = self.player.multi_words_x_coords[i]
+
+                            while self.player.word_start != 0:
+                                if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
+                                    self.player.word_start -=1
+                                else:
+                                    break
+
+                            while self.player.word_finish != 14:
+                                if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
+                                    self.player.word_finish +=1
+                                else:
+                                    break
+
+                            #dimiourgoume tin leksi tou xristi
+                            for letter in range(self.player.word_start, self.player.word_finish+1):
+                                self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
+
+                            self.player.word = "".join(self.player.word_letters)
+                            if len(self.player.word_letters) > 1:
+                                self.player.words_to_check.append(self.player.word)
+                                self.calculate_points()
+                            
+
                 else:
                     #elegxoume se periptosi pou i leksi einai orizontia
                     while self.player.word_start != 0:
-                        print(self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2])
                         if self.rects[f"{self.player.word_axis},{self.player.word_start - 1}"][2] == False:
                             self.player.word_start -=1
                         else:
                             break
                     
-                    print(self.player.word_start)
                     while self.player.word_finish != 14:
                         if self.rects[f"{self.player.word_axis},{self.player.word_finish + 1}"][2] == False:
                             self.player.word_finish +=1
                         else:
                             break
-                    print(self.player.word_finish)
+
                     #dimiourgoume tin leksi tou xristi
                     for letter in range(self.player.word_start, self.player.word_finish+1):
                         self.player.word_letters.append(self.rects_list[self.player.word_axis][letter])
                         self.player.previous_coords.append(f"{self.player.word_axis},{letter}")
 
+                    self.player.word = "".join(self.player.word_letters)
+                    self.player.words_to_check.append(self.player.word)
+                    self.calculate_points()
+                    
+                    if self.first_word == False:
+                        self.player.word_letters.clear()
+                        self.player.x_axis = False
+                        self.player.y_axis = True
+                        for i in range(len(self.player.multi_words_x_coords)):
+                            if self.rects[f"{self.player.multi_words_x_coords[i] + 1},{self.player.multi_words_y_coords[i]}"][2] == False:
+                                self.player.word_start = self.player.multi_words_x_coords[i]
+                                self.player.word_finish = self.player.multi_words_x_coords[i] + 1
+                                self.player.word_axis = self.player.multi_words_y_coords[i]
+                            elif self.rects[f"{self.player.multi_words_x_coords[i] - 1},{self.player.multi_words_y_coords[i]}"][2] == False:
+                                self.player.word_start = self.player.multi_words_x_coords[i] - 1
+                                self.player.word_finish = self.player.multi_words_x_coords[i]
+                                self.player.word_axis = self.player.multi_words_y_coords[i]
+                            else:
+                                self.player.word_start = self.player.multi_words_x_coords[i]
+                                self.player.word_finish = self.player.multi_words_x_coords[i]
+                                self.player.word_axis = self.player.multi_words_y_coords[i]
+                            
+                            while self.player.word_start != 0:
+                                if self.rects[f"{self.player.word_start - 1},{self.player.word_axis}"][2] == False:
+                                    self.player.word_start -=1
+                                else:
+                                    break
 
-                self.player.word = "".join(self.player.word_letters)
-                print(self.player.word)
+                            while self.player.word_finish != 14:
+                                if self.rects[f"{self.player.word_finish + 1},{self.player.word_axis}"][2] == False:
+                                    self.player.word_finish +=1
+                                else:
+                                    break
+                            
+                            
+                            #dimiourgoume tin leksi tou xristi
+                            for letter in range(self.player.word_start, self.player.word_finish+1):
+                                self.player.word_letters.append(self.rects_list[letter][self.player.word_axis])
+
+                            self.player.word = "".join(self.player.word_letters)
+                            if len(self.player.word_letters) > 1:
+                                self.player.words_to_check.append(self.player.word)
+                                self.calculate_points()
+                            
                 if self.rects["7,7"][2] == False and self.first_word:
-                    if self.check.check_for_valid_word(self.player.word):
-                        self.calculate_points()
+                    if self.check.check_for_valid_word(self.player.words_to_check[0]):
+                        self.player.add_points()
                         self.turn = 0
                         for i in range(len(self.player.coords_cancel)):
                             self.rects[self.player.coords_cancel[i]][3] = True
                         self.first_word = False
+                        self.player_score_number.configure(text = f"{self.player.highscore}")
                         self.player.reset_values()
                         self.main()
                     else:
-                        print("Word error")
                         self.remove_word()
                 elif self.first_word == False:
                     for letter in self.player.previous_coords:
@@ -287,23 +378,25 @@ class Board(tk.Tk):
                             self.player.second_check = True
                             break
                     if self.player.second_check:
-                        if self.check.check_for_valid_word(self.player.word):
-                            self.calculate_points()
-                            self.turn = 0
-                            for i in range(len(self.player.coords_cancel)):
-                                self.rects[self.player.coords_cancel[i]][3] = True
-                            self.player.reset_values()
-                            self.main()
-                        else:
-                            print("Word error 2")
-                            self.remove_word()
+                        for word in self.player.words_to_check:
+                            if self.check.check_for_valid_word(word) == False:
+                                self.player.words_ready = False
+                                break
+                            if self.player.words_ready:
+                                self.player.add_points()
+                                self.turn = 0
+                                for i in range(len(self.player.coords_cancel)):
+                                    self.rects[self.player.coords_cancel[i]][3] = True
+                                self.player_score_number.configure(text = f"{self.player.highscore}")
+                                self.player.reset_values()
+                                self.main()
+                            else:
+                                self.remove_word()
                     else:
                         self.remove_word()
                 else:
-                    print("error1")
                     self.remove_word()
             else:
-                print("error2")
                 self.remove_word()
 
     #methodos gia na paei passo o paiktis
@@ -383,10 +476,13 @@ class Board(tk.Tk):
     
     #methodos gia na teleiosei to paixnidi poy paizei o xristis
     def end_current_game(self):
-        pass
+        self.destroy()
+        intro = IntroPage()
+        intro.mainloop()
 
     def calculate_points(self):
         word_multiplier = 1
+
         if self.player.x_axis:
             pos = 0
             for letter in range(self.player.word_start, self.player.word_finish+1):
@@ -407,9 +503,8 @@ class Board(tk.Tk):
                 else:
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
                     pos += 1
-                
-            self.player.highscore += (self.player.current_word_score * word_multiplier)
-            self.player_score_number.configure(text = f"{self.player.highscore}")
+
+            self.player.potential_points.append(self.player.current_word_score * word_multiplier)
             self.player.current_word_score = 0
         else:
             pos = 0
@@ -432,8 +527,7 @@ class Board(tk.Tk):
                     self.player.current_word_score += self.bag.letters_points[self.player.word_letters[pos]]
                     pos += 1
                 
-            self.player.highscore += (self.player.current_word_score * word_multiplier)
-            self.player_score_number.configure(text = f"{self.player.highscore}")
+            self.player.potential_points.append(self.player.current_word_score * word_multiplier)
             self.player.current_word_score = 0
 
     def remove_word(self):
