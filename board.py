@@ -7,7 +7,7 @@ from letters_bag import Letters_bag
 from word_check import Word_check
 from player import Player
 import special_tiles
-from intro_page import IntroPage
+
 
 class Board(tk.Tk):
     def __init__(self):
@@ -477,6 +477,7 @@ class Board(tk.Tk):
     #methodos gia na teleiosei to paixnidi poy paizei o xristis
     def end_current_game(self):
         self.destroy()
+        from intro_page import IntroPage
         intro = IntroPage()
         intro.mainloop()
 
