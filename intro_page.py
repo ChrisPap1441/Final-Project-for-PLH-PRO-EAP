@@ -25,7 +25,10 @@ class IntroPage(tk.Tk):
             board.mainloop()
 
         def show_buttons_info():
-            pass
+            self.destroy()
+            from buttons_info import Info
+            button_info = Info()
+            button_info.mainloop()
 
         def game_rules():
             pass
