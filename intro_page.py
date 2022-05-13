@@ -31,7 +31,10 @@ class IntroPage(tk.Tk):
             button_info.mainloop()
 
         def game_rules():
-            pass
+            self.destroy()
+            from game_rules import Rules
+            rules_info = Rules()
+            rules_info.mainloop()
 
         #----------Buttons--------------#
         new_game = tk.Button(self, text="Νέο Παιχνίδι", command=start_game)
