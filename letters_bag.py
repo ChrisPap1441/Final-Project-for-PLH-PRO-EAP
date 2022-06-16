@@ -2,11 +2,12 @@ import random
 
 class Letters_bag:
     def __init__(self):
-        self.letters_bag = []
-        self.prepare_letters()
-        self.letters_points = {}
-        self.prepare_points()
+        self.letters_bag = [] #Λίστα για τα γράμματα της κληρωτίδας
+        self.prepare_letters() #Εισαγωγή των γραμμάτων στην κληρωτίδα
+        self.letters_points = {} #Λεξικό για τους πόντους των γραμμάτων
+        self.prepare_points() #Εισαγωγή των κλειδιών(γραμμάτων) με τις τιμές τους(πόντοι)
 
+    #Μέθοδος για την δημιουργία των γραμμάτων της κληρωτίδας
     def prepare_letters(self):
         self.letters_bag.extend(["Ζ", "Θ", "Ξ", "Ψ", "Β", "Φ", "Χ"])
         for i in range(2):
@@ -28,6 +29,7 @@ class Letters_bag:
         for i in range(12):
             self.letters_bag.extend(["Α"])
     
+    #Μέθοδος για την βαθμολόγηση των γραμμάτων
     def prepare_points(self):
         for key in ["Α", "Ε", "Η", "Ι", "Ν", "Ο", "Σ", "Τ"]:
             self.letters_points[key] = 1
@@ -42,10 +44,10 @@ class Letters_bag:
         for key in ["Ζ", "Θ", "Ξ", "Ψ"]:
             self.letters_points[key] = 10
 
+    #Μέθοδος για το μοίρασμα γραμμάτων στους παίκτες
     def pick_letter(self):
-        random.shuffle(self.letters_bag) #anakateuoume ta grammata
+        random.shuffle(self.letters_bag) #Ανακατεύουμε τα γράμματα
 
+        #Δίνουμε γράμματα στους παίκτες εφόσον η κληρωτίδα περιέχει γράμματα
         if len(self.letters_bag) > 0:
             return self.letters_bag.pop()
-        else:
-            return "!" #exoun teleiosei ta grammata ara teleionei kai to paixnidi
