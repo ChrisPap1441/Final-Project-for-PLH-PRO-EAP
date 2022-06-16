@@ -1,5 +1,5 @@
 import sys
-sys.dont_write_bytecode = True #gia na min dimiourgite se kathe ektelesi o fakelos pycache
+sys.dont_write_bytecode = True #Για να μην δημιουργείται σε κάθε εκτέλεση ο φάκελος pycache
 import random
 import tkinter as tk
 from PIL import ImageTk , Image
@@ -567,5 +567,3 @@ class Board(tk.Tk):
 if __name__ == "__main__":
     board = Board()
     board.mainloop()
-
-        
