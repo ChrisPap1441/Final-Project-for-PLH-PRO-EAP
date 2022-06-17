@@ -13,7 +13,7 @@ class IntroPage(tk.Tk):
         self.configure(background="lightgrey")
 
         #-----------Λογότυπο Scrabble------------#
-        #Για να μπορέσουμε να επεξεργαστούμε το μέγεθος της εικόνας αξιοποιούμε το Image και το ImageTk
+        #Για να μπορέσουμε να επεξεργαστώ το μέγεθος της εικόνας αξιοποιώ το Image και το ImageTk
         #της βιβλιοθήκης PIL
         self.logo_image = Image.open("Scrabble.png")
         self.resized_logo = self.logo_image.resize((500, 225), Image.Resampling.LANCZOS)
